@@ -1,0 +1,5 @@
+vsync: false
+fullscreen: true
+fps: 60
+width: 0
+height: 0
