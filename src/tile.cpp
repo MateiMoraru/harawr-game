@@ -37,3 +37,12 @@ void Tile::draw(sf::RenderWindow &window)
 {
     window.draw(sprite);
 }
+
+bool Tile::collides(const Tile& other) const
+{
+    return
+        position.x < other.position.x + other.size.x &&
+        position.x + size.x > other.position.x &&
+        position.y < other.position.y + other.size.y &&
+        position.y + size.y > other.position.y;
+}

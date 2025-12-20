@@ -16,7 +16,7 @@ Spritesheet::Spritesheet(string path_to_file)
     {
         for(int j = 0; j < SIZE; j += TILE_SIZE)
         {
-            sprite.setTextureRect(sf::IntRect(i, j, TILE_SIZE, TILE_SIZE));
+            sprite.setTextureRect(sf::IntRect(j, i, TILE_SIZE, TILE_SIZE));
             sprites.push_back(sprite);
         }
     }

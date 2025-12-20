@@ -11,6 +11,8 @@ class Tile
 
         void draw(sf::RenderWindow &window);
 
+        bool collides(const Tile& other) const;
+
     private:
         sf::Sprite sprite;
         int sprite_id;
