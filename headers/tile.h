@@ -7,7 +7,7 @@ class Tile
 {
     public:
         Tile(sf::Sprite sprite, int sprite_id);
-        Tile(sf::Sprite sprite, int sprite_id, sf::Vector2f &position, sf::Vector2f &size);
+        Tile(sf::Sprite sprite, int sprite_id, const sf::Vector2f &position, const sf::Vector2f &size);
 
         void draw(sf::RenderWindow &window);
 

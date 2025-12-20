@@ -37,7 +37,7 @@ int main()
 
     Spritesheet spritesheet = Spritesheet("assets/spritesheet.png");
 
-    Tile null_tile = Tile(spritesheet.get_sprite(0), 0);
+    Tile null_tile = Tile(spritesheet.get_sprite(0), 0, sf::Vector2f(0, 0), sf::Vector2f(128, 128));
 
     //Main Loop
 
