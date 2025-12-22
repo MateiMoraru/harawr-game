@@ -1,7 +1,21 @@
 #include "tile_map.h"
+#include <random>
+
+float random_float(float min, float max)
+{
+    static std::mt19937 rng(std::random_device{}());
+    std::uniform_real_distribution<float> dist(min, max);
+    return dist(rng);
+}
 
 TileMap::TileMap(sf::RenderWindow &window, Spritesheet &spritesheet) : window(window), spritesheet(spritesheet)
 {
+
+    for(int i = 0; i < 2000; i += 200 + random_float(-100, 0))
+    {
+        line_overlay.push_back(pair<float, float>(i, random_float(0.5, 5)));
+    }
+    
 }
 
 void TileMap::update()
@@ -27,7 +41,6 @@ void TileMap::update()
             if(!collides)
             {
                 tile_map.push_back(temp_tile);
-                cout << "mouse clicked at " << mouse_pos.x << " " << mouse_pos.y << endl; 
             }
         }
     }
@@ -41,7 +54,30 @@ void TileMap::draw()
     }
 }
 
+void TileMap::draw_overlay()
+{
+    sf::RectangleShape thick_line;
+
+    thick_line.setFillColor(sf::Color(0, 0, 0, 100));
+    thick_line.setPosition(0, 0);
+    thick_line.setSize(sf::Vector2f(window.getSize().x, window.getSize().y));
+    window.draw(thick_line);
+    
+    thick_line.setFillColor(sf::Color::Black);
+    thick_line.setSize(sf::Vector2f(window.getSize().x, 0.5f));
+
+    for (int i = 0; i < line_overlay.size(); i ++)
+    {
+        thick_line.setSize(sf::Vector2f(window.getSize().x, line_overlay[i].second));
+        thick_line.setPosition(sf::Vector2f(0.0f, line_overlay[i].first));
+        window.draw(thick_line);
+    }
+
+
+}
+
 void TileMap::scroll(int delta)
 {
     selected_tile_id += delta;
 }
+

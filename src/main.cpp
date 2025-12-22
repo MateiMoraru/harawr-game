@@ -25,7 +25,7 @@ int main()
     sf::RenderWindow window;
 
     if(settings.get_fullscreen())
-        window.create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "SFML harawr game", sf::Style::Fullscreen);
+        window.create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "SFML harawr game", sf::Style::Default);
     else
         window.create(sf::VideoMode(settings.get_width(), settings.get_height()), "SFML harawr game");
     cout << "Created window (" << SCREEN_WIDTH << "; " << SCREEN_HEIGHT  << ")" << endl;
@@ -45,16 +45,20 @@ int main()
     //Main Loop
 
     sf::Clock clock;
-    float fps = 0.f;
+    int frames = 0;
 
     Text text = Text("assets/arial.ttf", 32);
     text.set_position(32, 32);
 
     while (window.isOpen())
     {
-        sf::Time dt = clock.restart();
-        fps = 1.f / dt.asSeconds();
-        text.set_string(to_string(fps));
+        frames++;
+        if (clock.getElapsedTime().asSeconds() >= 1.f)
+        {
+            text.set_string("FPS: " + std::to_string(frames));
+            frames = 0;
+            clock.restart();
+        }
 
         sf::Event event;
         while (window.pollEvent(event))
@@ -81,11 +85,13 @@ int main()
             }
         }
 
-        tile_map.update();
+        //tile_map.update();
 
         window.clear(sf::Color::Black);
 
-        tile_map.draw();
+        //tile_map.draw();
+        //tile_map.draw_overlay();
+
         text.draw(window);
 
         window.display();

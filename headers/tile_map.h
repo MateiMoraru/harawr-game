@@ -16,6 +16,7 @@ class TileMap
 
         void update();
         void draw();
+        void draw_overlay();
 
         void scroll(int delta);
 
@@ -30,6 +31,7 @@ class TileMap
         int selected_tile_id = 0;
 
         vector<Tile> tile_map;
+        vector<pair<float, float>> line_overlay;
 };
 
 #endif
