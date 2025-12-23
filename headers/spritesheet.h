@@ -10,7 +10,8 @@ using namespace std;
 //TEXTURES
 const int NULL_TEX = 0, // Error texture
           BRICK = 1,
-          PLANK = 2;
+          PLANK = 2,
+          PLAYER = 10;
 
 class Spritesheet
 {

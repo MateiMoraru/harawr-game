@@ -8,6 +8,7 @@
 #include "tile_map.h"
 #include "spritesheet.h"
 #include "text.h"
+#include "player.h"
 
 using namespace std;
 
@@ -25,7 +26,7 @@ int main()
     sf::RenderWindow window;
 
     if(settings.get_fullscreen())
-        window.create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "SFML harawr game", sf::Style::Default);
+        window.create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "SFML harawr game", sf::Style::Fullscreen);
     else
         window.create(sf::VideoMode(settings.get_width(), settings.get_height()), "SFML harawr game");
     cout << "Created window (" << SCREEN_WIDTH << "; " << SCREEN_HEIGHT  << ")" << endl;
@@ -39,22 +40,26 @@ int main()
 
     Spritesheet spritesheet = Spritesheet("assets/spritesheet.png");
 
-    //Tile null_tile = Tile(spritesheet.get_sprite(0), 0, sf::Vector2f(0, 0), sf::Vector2f(128, 128));
     TileMap tile_map = TileMap(window, spritesheet);
-
-    //Main Loop
-
+    
     sf::Clock clock;
     int frames = 0;
 
     Text text = Text("assets/arial.ttf", 32);
     text.set_position(32, 32);
 
+    Player player = Player(window, spritesheet);
+
+    //Main Loop
+
+    sf::RenderStates states;
+
     while (window.isOpen())
     {
         frames++;
         if (clock.getElapsedTime().asSeconds() >= 1.f)
         {
+            cout << frames << endl;
             text.set_string("FPS: " + std::to_string(frames));
             frames = 0;
             clock.restart();
@@ -70,6 +75,8 @@ int main()
             {
                 if (event.key.code == sf::Keyboard::Escape)
                     window.close();
+                if (event.key.code == sf::Keyboard::P)
+                    tile_map.save();
             }
             if (event.type == sf::Event::MouseWheelScrolled)
             {
@@ -85,12 +92,20 @@ int main()
             }
         }
 
-        //tile_map.update();
+        tile_map.update(player);
+        player.update();
+        
+        player.offset.x = player.get_x() - SCREEN_WIDTH / 2.f;
+        player.offset.y = player.get_y() - SCREEN_HEIGHT / 2.f;
 
+        states.transform = sf::Transform();
+        states.transform.translate(-player.get_x_offset(), -player.get_y_offset());
+        
         window.clear(sf::Color::Black);
 
-        //tile_map.draw();
-        //tile_map.draw_overlay();
+        tile_map.draw(player, states);
+        tile_map.draw_overlay();
+
 
         text.draw(window);
 

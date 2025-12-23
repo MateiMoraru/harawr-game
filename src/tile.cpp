@@ -33,10 +33,16 @@ Tile::Tile(sf::Sprite sprite, int sprite_id, const sf::Vector2f &position, const
     );
 }
 
-void Tile::draw(sf::RenderWindow &window)
+void Tile::draw(sf::RenderWindow &window, sf::RenderStates &states)
 {
-    window.draw(sprite);
+    window.draw(sprite, states);
 }
+
+sf::FloatRect Tile::get_global_bounds()
+{
+    return sf::FloatRect(position.x, position.y, size.x, size.y);
+}
+
 
 bool Tile::collides(const Tile& other) const
 {
@@ -45,4 +51,9 @@ bool Tile::collides(const Tile& other) const
         position.x + size.x > other.position.x &&
         position.y < other.position.y + other.size.y &&
         position.y + size.y > other.position.y;
+}
+
+void Tile::set_sprite_color(sf::Color color)
+{
+    sprite.setColor(color);
 }
