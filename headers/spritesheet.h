@@ -16,7 +16,7 @@ const int NULL_TEX = 0, // Error texture
 class Spritesheet
 {
     public:
-        Spritesheet(string path_to_file);
+        Spritesheet();
 
         sf::Sprite get_sprite(int id);
 

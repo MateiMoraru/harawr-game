@@ -9,6 +9,7 @@
 #include "spritesheet.h"
 #include "text.h"
 #include "player.h"
+#include "sound_system.h"
 
 using namespace std;
 
@@ -38,7 +39,10 @@ int main()
     else 
         window.setVerticalSyncEnabled(settings.get_vsync());
 
-    Spritesheet spritesheet = Spritesheet("assets/spritesheet.png");
+    Spritesheet spritesheet = Spritesheet();
+    SoundSystem sound_system = SoundSystem();
+
+    sound_system.play_loop_sound(BACKGROUND_SOUND);
 
     TileMap tile_map = TileMap(window, spritesheet);
     
@@ -59,7 +63,6 @@ int main()
         frames++;
         if (clock.getElapsedTime().asSeconds() >= 1.f)
         {
-            cout << frames << endl;
             text.set_string("FPS: " + std::to_string(frames));
             frames = 0;
             clock.restart();

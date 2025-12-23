@@ -1,9 +1,9 @@
 #include "spritesheet.h"
 
-Spritesheet::Spritesheet(string path_to_file)
+Spritesheet::Spritesheet()
 {
 
-    if(!spritesheet.loadFromFile(path_to_file))
+    if(!spritesheet.loadFromFile("assets/spritesheet.png"))
     {
         cerr << "Failed to load from file" << endl;
         return;

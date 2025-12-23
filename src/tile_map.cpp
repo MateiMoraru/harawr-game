@@ -65,7 +65,7 @@ void TileMap::draw(Player &player, sf::RenderStates &states)
     {
         if(!tile.get_global_bounds().intersects(view))
             continue;
-        float maxDistance = 5.f * tile_size;
+        float maxDistance = 7.f * tile_size;
 
         float distance = std::hypot(
             tile.get_x() - player.get_x(),

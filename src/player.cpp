@@ -8,6 +8,15 @@ Player::Player(sf::RenderWindow &window, Spritesheet &spritesheet) : window(wind
 
 void Player::update()
 {
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
+    {
+        speed = 10.f;
+    }
+    else
+    {
+        speed = 5.f;
+    }
+    
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
     {
         move(0.f, -speed);
