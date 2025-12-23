@@ -8,20 +8,21 @@
 #include "tile.h"
 #include "spritesheet.h"
 #include "player.h"
+#include "jumpscare.h"
 
 using namespace std;
 
 class TileMap
 {
     public:
-        TileMap(sf::RenderWindow &window, Spritesheet &spritesheet);
+        TileMap(sf::RenderWindow &window, Spritesheet &spritesheet, SoundSystem &soundsystem);
 
         void update(Player &player);
         void draw(Player &player, sf::RenderStates &states);
         void draw_overlay();
 
         void save();
-        void load();
+        void load(SoundSystem &soundsystem);
 
         void scroll(int delta);
 
@@ -39,6 +40,7 @@ class TileMap
 
         vector<Tile> tile_map;
         vector<pair<float, float>> line_overlay;
+        vector<Jumpscare> jumpscares;
 };
 
 #endif

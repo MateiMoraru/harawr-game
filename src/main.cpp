@@ -13,6 +13,8 @@
 
 using namespace std;
 
+float delta = 0;
+
 int main()
 {
     Settings settings = Settings();
@@ -40,11 +42,9 @@ int main()
         window.setVerticalSyncEnabled(settings.get_vsync());
 
     Spritesheet spritesheet = Spritesheet();
-    SoundSystem sound_system = SoundSystem();
+    SoundSystem soundsystem = SoundSystem();
 
-    sound_system.play_loop_sound(BACKGROUND_SOUND);
-
-    TileMap tile_map = TileMap(window, spritesheet);
+    TileMap tile_map = TileMap(window, spritesheet, soundsystem);
     
     sf::Clock clock;
     int frames = 0;
@@ -57,6 +57,8 @@ int main()
     //Main Loop
 
     sf::RenderStates states;
+
+    soundsystem.play_loop_sound(BACKGROUND_SOUND);
 
     while (window.isOpen())
     {

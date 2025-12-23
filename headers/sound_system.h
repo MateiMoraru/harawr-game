@@ -7,7 +7,8 @@
 
 using namespace std;
 
-const int BACKGROUND_SOUND = 0;
+const int BACKGROUND_SOUND = 0,
+          JUMPSCARE_SOUND = 1;
 
 class SoundSystem
 {

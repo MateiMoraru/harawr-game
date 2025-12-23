@@ -8,14 +8,14 @@ float random_float(float min, float max)
     return dist(rng);
 }
 
-TileMap::TileMap(sf::RenderWindow &window, Spritesheet &spritesheet) : window(window), spritesheet(spritesheet)
+TileMap::TileMap(sf::RenderWindow &window, Spritesheet &spritesheet, SoundSystem &soundsystem) : window(window), spritesheet(spritesheet)
 {
 
     for(int i = 0; i < 2000; i += 150 + random_float(-100, 0))
     {
         line_overlay.push_back(pair<float, float>(i, random_float(0.5, 15)));
     }
-    load();
+    load(soundsystem);
     
 }
 
@@ -59,13 +59,13 @@ void TileMap::draw(Player &player, sf::RenderStates &states)
 {
     sf::FloatRect view(player.get_x_offset(), player.get_y_offset(), window.getSize().x, window.getSize().y);
 
-    float brightness_min = random_float(0.f, 0.07f);
+    float brightness_min = random_float(0.f, 0.01f);
 
     for(Tile &tile : tile_map)
     {
         if(!tile.get_global_bounds().intersects(view))
             continue;
-        float maxDistance = 7.f * tile_size;
+        float maxDistance = (7.f + random_float(0.f, .1f)) * tile_size;
 
         float distance = std::hypot(
             tile.get_x() - player.get_x(),
@@ -76,22 +76,34 @@ void TileMap::draw(Player &player, sf::RenderStates &states)
         float dy = tile.get_y() - player.get_y();
         float dist2 = dx*dx + dy*dy;
         float max_dist = maxDistance*maxDistance;
-        float brightness = clamp(1.f - dist2 / max_dist, brightness_min, 1.f);
+        float brightness = clamp(1.f - dist2 / max_dist, brightness_min, .9f);
 
         sf::Uint8 light = static_cast<sf::Uint8>(255 * brightness);
-        tile.set_sprite_color(sf::Color(light, light, light));
+        tile.set_sprite_color(sf::Color(255, 227, 176, light));
         tile.draw(window, states);
+    }
+
+    for(int i = 0; i < jumpscares.size(); i++)
+    {
+        Jumpscare &jumpscare = jumpscares[i];
+        float dx = jumpscare.get_x() - player.get_x();
+        float dy = jumpscare.get_y() - player.get_y();
+        if(!jumpscare.is_triggered() && !jumpscare.is_expired() && sqrt(dx * dx + dy * dy) < tile_size * 3)
+        {
+            jumpscare.trigger();
+        }
+        jumpscare.draw();
+        if(jumpscare.is_expired() && !jumpscare.is_deleted())
+        {
+            jumpscare.delete_();
+            tile_map[jumpscare.get_index()] = tile_map.back();
+            tile_map.pop_back();
+        }
     }
 }
 
 void TileMap::draw_overlay()
 {
-
-    //thick_line.setFillColor(sf::Color(0, 0, 0, 100));
-    //thick_line.setPosition(0, 0);
-    //thick_line.setSize(sf::Vector2f(window.getSize().x, window.getSize().y));
-    //window.draw(thick_line);
-    
     thick_line.setFillColor(sf::Color::Black);
 
     for (int i = 0; i < line_overlay.size(); i ++)
@@ -114,7 +126,7 @@ void TileMap::save()
     }
 }
 
-void TileMap::load()
+void TileMap::load(SoundSystem &soundsystem)
 {
     ifstream in("assets/map.txt");
     if(!in.is_open())
@@ -122,7 +134,6 @@ void TileMap::load()
         cout << "Nothing to load :(" << endl;
         return;
     }
-
     
     float x, y, id;
     while(in >> id)
@@ -133,6 +144,9 @@ void TileMap::load()
         Tile tile(spritesheet.get_sprite(id), id, sf::Vector2f(x, y), sf::Vector2f(tile_size, tile_size));
 
         tile_map.push_back(tile);
+
+        if(id == JUMPSCARE_BLOCK)
+            jumpscares.push_back(Jumpscare(soundsystem, window, JUMPSCARE_1, sf::Vector2f(x, y), tile_map.size() - 1));
     }
 }
 
