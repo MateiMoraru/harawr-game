@@ -14,7 +14,8 @@ TileMap::TileMap(sf::RenderWindow &window, Spritesheet &spritesheet, SoundSystem
 
     for(int i = 0; i < 2000; i += 150 + random_float(-100, 0))
     {
-        line_overlay.push_back(pair<float, float>(i, random_float(0.5, 15)));
+        if(i < window.getSize().y / 2 - 100 || i > window.getSize().y / 2 + 100)
+            line_overlay.push_back(pair<float, float>(i, random_float(0.5, 15)));
     }
     load(soundsystem);
     
@@ -94,13 +95,8 @@ void TileMap::draw(Player &player, sf::RenderStates &states)
             continue;
         float max_distance = (7.f + random_float(0.f, .1f)) * tile_size;
 
-        float distance = std::hypot(
-            tile.get_x() - player.get_x(),
-            tile.get_y() - player.get_y()
-        );
-
-        float dx = tile.get_x() - player.get_x();
-        float dy = tile.get_y() - player.get_y();
+        float dx = tile.get_x() - player.get_x() + player.get_size() / 2;
+        float dy = tile.get_y() - player.get_y() + player.get_size() / 2;
         float dist2 = dx*dx + dy*dy;
         float max_dist = max_distance*max_distance;
         float brightness = clamp(1.f - dist2 / max_dist, brightness_min, .9f);
@@ -114,7 +110,10 @@ void TileMap::draw(Player &player, sf::RenderStates &states)
             
         }
     }
+}
 
+void TileMap::draw_jumpscares(Player &player)
+{
     for(int i = 0; i < jumpscares.size(); i++)
     {
         Jumpscare &jumpscare = jumpscares[i];

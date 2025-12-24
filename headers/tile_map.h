@@ -20,6 +20,7 @@ class TileMap
         void update(Player &player);
         void draw(Player &player, sf::RenderStates &states);
         void draw_overlay();
+        void draw_jumpscares(Player &player);
 
         void save();
         void load(SoundSystem &soundsystem);

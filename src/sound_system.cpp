@@ -1,4 +1,12 @@
 #include "sound_system.h"
+#include <random>
+
+float SoundSystem::random_float(float min, float max)
+{
+    static std::mt19937 rng(std::random_device{}());
+    std::uniform_real_distribution<float> dist(min, max);
+    return dist(rng);
+}
 
 SoundSystem::SoundSystem()
 {
@@ -14,21 +22,38 @@ SoundSystem::SoundSystem()
     }
 
     sounds.push_back(buffer);
+
+    if (!buffer.loadFromFile("assets/sfx/footstep.mp3")) {
+        std::cerr << "Failed to load sound!" << std::endl;
+    }
+
+    sounds.push_back(buffer);
 }
 
 void SoundSystem::play_sound(int id)
 {
-    activeSounds.emplace_back();
-    sf::Sound &s = activeSounds.back();
+    active_sounds.emplace_back();
+    sf::Sound &s = active_sounds.back();
     s.setBuffer(sounds[id]);
     s.play();
 
 }
 
+void SoundSystem::play_sound(int id, float min, float max)
+{
+    active_sounds.emplace_back();
+    sf::Sound &s = active_sounds.back();
+    s.setBuffer(sounds[id]);
+    s.setPitch(random_float(min, max));
+    s.play();
+
+}
 
 void SoundSystem::play_loop_sound(int id)
 {
-    loopedSound.setBuffer(sounds[id]);
-    loopedSound.setLoop(true);
-    loopedSound.play();
+    looped.emplace_back();
+    sf::Sound &s = looped.back();
+    s.setBuffer(sounds[id]);
+    s.play();
+    s.setLoop(true);
 }

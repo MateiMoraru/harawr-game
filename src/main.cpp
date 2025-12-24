@@ -42,10 +42,8 @@ int main()
         window.setVerticalSyncEnabled(settings.get_vsync());
 
     Spritesheet spritesheet = Spritesheet();
-
-    Player player = Player(window, spritesheet);
     SoundSystem soundsystem = SoundSystem();
-
+    Player player = Player(window, spritesheet, soundsystem);
     TileMap tile_map = TileMap(window, spritesheet, soundsystem);
     
     sf::Clock clock;
@@ -112,9 +110,11 @@ int main()
 
         player.draw(states);
 
+        tile_map.draw_jumpscares(player);
+
         tile_map.draw_overlay();
 
-        spritesheet.draw(window);
+        //spritesheet.draw(window);
 
         text.draw(window);
 

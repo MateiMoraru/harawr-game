@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef SOUND_SYSTEM_H
 #define SOUND_SYSTEM_H
 
@@ -8,7 +10,8 @@
 using namespace std;
 
 const int BACKGROUND_SOUND = 0,
-          JUMPSCARE_SOUND = 1;
+          JUMPSCARE_SOUND = 1,
+          FOOTSTEP = 2;
 
 class SoundSystem
 {
@@ -16,11 +19,15 @@ class SoundSystem
         SoundSystem();
         void play_sound(int id);
         void play_loop_sound(int id);
+        void play_sound(int id, float min, float max);
+
+        float random_float(float min, float max);
 
     private:
-        std::vector<sf::SoundBuffer> sounds;
-        std::vector<sf::Sound> activeSounds;
-        sf::Sound loopedSound;
+        vector<sf::SoundBuffer> sounds;
+        vector<sf::Sound> looped;
+        vector<sf::Sound> active_sounds;
+
 };
 
 

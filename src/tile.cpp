@@ -57,3 +57,16 @@ void Tile::set_sprite_color(sf::Color color)
 {
     sprite.setColor(color);
 }
+
+void Tile::set_scale(sf::Vector2f scale)
+{
+    sprite.setScale(scale.x, scale.y);
+}
+
+void Tile::set_sprite(sf::Sprite sprite, int id) 
+{ 
+    this->sprite = sprite; 
+    this->sprite.setPosition(position); 
+    //this->sprite.setScale(4, 4);
+    sprite_id = id; 
+}

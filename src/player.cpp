@@ -1,23 +1,37 @@
 #include "player.h"
 
-Player::Player(sf::RenderWindow &window, Spritesheet &spritesheet) : window(window), spritesheet(spritesheet), player(spritesheet.get_sprite(PLAYER), PLAYER)
+Player::Player(sf::RenderWindow &window, Spritesheet &spritesheet, SoundSystem &soundsystem)
+    : window(window),
+      spritesheet(spritesheet),
+      walk_animation_up(spritesheet, 3, 0.1f, PLAYER, soundsystem),
+      walk_animation_down(spritesheet, 3, 0.1f, PLAYER + 3, soundsystem),
+      walk_animation_left(spritesheet, 3, 0.1f, PLAYER + 8, soundsystem),
+      walk_animation_right(spritesheet, 3, 0.1f, PLAYER + 11, soundsystem),
+      player(spritesheet.get_sprite(PLAYER), PLAYER)
 {
     sf::Vector2u size = window.getSize();
-    position = sf::Vector2f(size.x / 2 - (size.x / 2) % 64 - 64, size.y / 2 - (size.y / 2) % 64);
+    position = sf::Vector2f(size.x / 2 - (size.x / 2) % 64 - this->size, size.y / 2 - (size.y / 2) % 64);
+    float tileX = (size.x / 2 / 64) * 64;
+    float tileY = (size.y / 2 / 64) * 64;
+
+    player.get_sprite().setOrigin(8.f, 8.f);
+    position.x = size.x / 2;
+    position.y = size.y / 2;
     player.set_position(position.x, position.y);
-    Player::set_size(64.f, 64.f);
+
+    player.set_scale(sf::Vector2f(this->size / 16.f, this->size / 16.f));
+
+    offset.x = player.get_x() - size.x / 2.f;
+    offset.y = player.get_y() - size.y / 2.f;
+
+    hitbox.width  = 64;
+    hitbox.height = 64;
 }
 
 void Player::update()
 {
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
-    {
-        speed = 10.f;
-    }
-    else
-    {
-        speed = 5.f;
-    }
+    moved.x = 0;
+    moved.y = 0;
     
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
     {
@@ -42,6 +56,57 @@ void Player::update()
         move(speed, 0.f);
         moved.x = speed; 
     }
+
+    if(moved.y < 0.f)
+    {
+        if(!walk_animation_up.get_started())
+            walk_animation_up.start();
+        walk_animation_up.update(FOOTSTEP);
+        player.set_sprite(walk_animation_up.get_sprite(), PLAYER);
+        player.get_sprite().setOrigin(12.f, 8.f);
+        player.set_scale({ this->size / 16.f, this->size / 16.f });
+    }
+    else if(moved.y > 0.f)
+    {
+        if(!walk_animation_down.get_started())
+            walk_animation_down.start();
+        walk_animation_down.update(FOOTSTEP);
+        player.set_sprite(walk_animation_down.get_sprite(), PLAYER);
+        player.get_sprite().setOrigin(12.f, 8.f);
+        player.set_scale({ this->size / 16.f, this->size / 16.f });
+    }
+    else if(moved.x < 0.f)
+    {
+        if(!walk_animation_left.get_started())
+            walk_animation_left.start();
+        walk_animation_left.update(FOOTSTEP);
+        player.set_sprite(walk_animation_left.get_sprite(), PLAYER);
+        player.get_sprite().setOrigin(12.f, 8.f);
+        player.set_scale({ size / 16.f, size / 16.f });
+    }
+    else if(moved.x > 0.f)
+    {
+        if(!walk_animation_right.get_started())
+            walk_animation_right.start();
+        walk_animation_right.update(FOOTSTEP);
+        player.set_sprite(walk_animation_right.get_sprite(), PLAYER);
+        player.get_sprite().setOrigin(12.f, 8.f);
+        player.set_scale({ size / 16.f, size / 16.f });
+    }
+    else
+    {
+        walk_animation_up.stop();
+        walk_animation_down.stop();
+        walk_animation_right.stop();
+        walk_animation_left.stop();
+        player.set_sprite(spritesheet.get_sprite(PLAYER), PLAYER);
+        player.get_sprite().setOrigin(12.f, 8.f);
+        player.set_scale({ size / 16.f, size / 16.f });
+    }
+
+    hitbox.left = position.x - size * .5f;
+    hitbox.top  = position.y + size / 2.f - hitbox.height;
+
 
 }
 
