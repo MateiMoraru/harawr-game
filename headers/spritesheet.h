@@ -12,7 +12,22 @@ const int NULL_TEX = 0, // Error texture
           FLOOR = 1,
           BRICK = 2,
           JUMPSCARE_BLOCK = 3,
-          PLAYER = 8;
+          DOOR_YELLOW = 4,
+          DOOR_BLUE = 5,
+          DOOR_RED = 6,
+          DOOR_GREEN = 7,
+          PLAYER = 8,
+          PLAYER_UP_1 = 9,
+          PLAYER_UP_2 = 10,
+          PLAYER_DOWN = 11,
+          PLAYER_DOWN_1 = 12,
+          PLAYER_DOWN_2 = 13,
+          PLAYER_LEFT = 16,
+          PLAYER_LEFT_1 = 17,
+          PLAYER_LEFT_2 = 18,
+          PLAYER_RIGHT = 19,
+          PLAYER_RIGHT_1 = 20,
+          PLAYER_RIGHT_2 = 21;
 
 extern vector<int> collidable;
 

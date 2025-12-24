@@ -4,11 +4,14 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
+#include <random>
+#include <algorithm>
 
 #include "tile.h"
 #include "spritesheet.h"
 #include "player.h"
 #include "jumpscare.h"
+#include "door.h"
 
 using namespace std;
 
@@ -27,6 +30,8 @@ class TileMap
 
         void scroll(int delta);
 
+        int get_selected_block() const { return selected_tile_id; }
+
     private:
         sf::RenderWindow& window;
         Spritesheet& spritesheet;
@@ -43,6 +48,7 @@ class TileMap
         vector<Tile> collidable_tiles;
         vector<pair<float, float>> line_overlay;
         vector<Jumpscare> jumpscares;
+        vector<Door> doors;
 };
 
 #endif

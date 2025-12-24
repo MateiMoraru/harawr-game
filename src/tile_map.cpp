@@ -1,6 +1,5 @@
 #include "tile_map.h"
-#include <random>
-#include <algorithm>
+
 
 float random_float(float min, float max)
 {
@@ -104,12 +103,21 @@ void TileMap::draw(Player &player, sf::RenderStates &states)
         sf::Uint8 light = static_cast<sf::Uint8>(255 * brightness);
         tile.set_sprite_color(sf::Color(255, 217, 166, light));
         tile.draw(window, states);
+    }
 
-        if(dist2 < tile_size * 2)
+    for(Door &door : doors)
+    {
+        door.draw(states);
+
+        if(player.get_sprite().getGlobalBounds().intersects(door.get_sprite().getGlobalBounds()))
         {
-            
+            if(player.has_in_inventory(door.get_key()))
+            {
+
+            }
         }
     }
+
 }
 
 void TileMap::draw_jumpscares(Player &player)
@@ -174,13 +182,18 @@ void TileMap::load(SoundSystem &soundsystem)
 
         Tile tile(spritesheet.get_sprite(id), id, sf::Vector2f(x, y), sf::Vector2f(tile_size, tile_size));
 
-        tile_map.push_back(tile);
+        if(!(id >= DOOR_YELLOW && id <= DOOR_GREEN))
+            tile_map.push_back(tile);
 
         if(id == JUMPSCARE_BLOCK)
             jumpscares.push_back(Jumpscare(soundsystem, window, 0, sf::Vector2f(x, y), tile_map.size() - 1));
         if(find(collidable.begin(), collidable.end(), id) != collidable.end())
         {
             collidable_tiles.push_back(tile);
+        }
+        if(id >= DOOR_YELLOW && id <= DOOR_GREEN)
+        {
+            doors.push_back(Door(window, spritesheet, soundsystem, {x, y}, {tile_size, tile_size}, id));
         }
     }
 }

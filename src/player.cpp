@@ -4,9 +4,9 @@ Player::Player(sf::RenderWindow &window, Spritesheet &spritesheet, SoundSystem &
     : window(window),
       spritesheet(spritesheet),
       walk_animation_up(spritesheet, 3, 0.1f, PLAYER, soundsystem),
-      walk_animation_down(spritesheet, 3, 0.1f, PLAYER + 3, soundsystem),
-      walk_animation_left(spritesheet, 3, 0.1f, PLAYER + 8, soundsystem),
-      walk_animation_right(spritesheet, 3, 0.1f, PLAYER + 11, soundsystem),
+      walk_animation_down(spritesheet, 3, 0.1f, PLAYER_DOWN, soundsystem),
+      walk_animation_left(spritesheet, 3, 0.1f, PLAYER_LEFT, soundsystem),
+      walk_animation_right(spritesheet, 3, 0.1f, PLAYER_RIGHT, soundsystem),
       player(spritesheet.get_sprite(PLAYER), PLAYER)
 {
     sf::Vector2u size = window.getSize();
@@ -99,7 +99,7 @@ void Player::update()
         walk_animation_down.stop();
         walk_animation_right.stop();
         walk_animation_left.stop();
-        player.set_sprite(spritesheet.get_sprite(PLAYER), PLAYER);
+        //player.set_sprite(spritesheet.get_sprite(PLAYER), PLAYER);
         player.get_sprite().setOrigin(12.f, 8.f);
         player.set_scale({ size / 16.f, size / 16.f });
     }
@@ -126,5 +126,4 @@ void Player::move(float x, float y)
 void Player::draw(sf::RenderStates states)
 {
     window.draw(player.get_sprite(), states);
-    //window.draw(circle_light);
 }

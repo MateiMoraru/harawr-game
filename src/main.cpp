@@ -35,7 +35,6 @@ int main()
     cout << "Created window (" << SCREEN_WIDTH << "; " << SCREEN_HEIGHT  << ")" << endl;
 
     // Loading Settings
-
     if(!settings.get_vsync())
         window.setFramerateLimit(settings.get_fps());
     else 
@@ -114,7 +113,8 @@ int main()
 
         tile_map.draw_overlay();
 
-        //spritesheet.draw(window);
+        Tile temp_tile = Tile(spritesheet.get_sprite(tile_map.get_selected_block()), tile_map.get_selected_block(), {0, 100}, sf::Vector2f(64, 64));
+        temp_tile.draw(window);
 
         text.draw(window);
 

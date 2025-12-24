@@ -11,7 +11,8 @@ using namespace std;
 
 const int BACKGROUND_SOUND = 0,
           JUMPSCARE_SOUND = 1,
-          FOOTSTEP = 2;
+          FOOTSTEP = 2,
+          DOOR_OPEN = 3;
 
 class SoundSystem
 {

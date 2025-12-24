@@ -38,6 +38,11 @@ void Tile::draw(sf::RenderWindow &window, sf::RenderStates &states)
     window.draw(sprite, states);
 }
 
+void Tile::draw(sf::RenderWindow &window)
+{
+    window.draw(sprite);
+}
+
 sf::FloatRect Tile::get_global_bounds()
 {
     return sf::FloatRect(position.x, position.y, size.x, size.y);

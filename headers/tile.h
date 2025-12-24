@@ -11,6 +11,7 @@ class Tile
         Tile(sf::Sprite sprite, int sprite_id, const sf::Vector2f &position, const sf::Vector2f &size);
 
         void draw(sf::RenderWindow &window, sf::RenderStates &states);
+        void draw(sf::RenderWindow &window);
 
         float get_x() const { return position.x; };
         float get_y() const { return position.y; };
