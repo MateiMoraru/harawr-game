@@ -8,7 +8,7 @@
 using namespace std;
 
 //TEXTURES
-const int NULL_TEX = 0, // Error texture
+const int NULL_TEX = 64, // Error texture
           FLOOR = 1,
           BRICK = 2,
           JUMPSCARE_BLOCK = 3,
@@ -22,12 +22,16 @@ const int NULL_TEX = 0, // Error texture
           PLAYER_DOWN = 11,
           PLAYER_DOWN_1 = 12,
           PLAYER_DOWN_2 = 13,
+          KEY_YELLOW = 14,
+          KEY_BLUE = 15,
           PLAYER_LEFT = 16,
           PLAYER_LEFT_1 = 17,
           PLAYER_LEFT_2 = 18,
           PLAYER_RIGHT = 19,
           PLAYER_RIGHT_1 = 20,
-          PLAYER_RIGHT_2 = 21;
+          PLAYER_RIGHT_2 = 21,
+          KEY_RED = 22,
+          KEY_GREEN = 23;
 
 extern vector<int> collidable;
 

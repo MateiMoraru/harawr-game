@@ -35,6 +35,7 @@ class TileMap
     private:
         sf::RenderWindow& window;
         Spritesheet& spritesheet;
+        SoundSystem &soundsystem;
 
         sf::RectangleShape thick_line;
 
@@ -46,9 +47,10 @@ class TileMap
 
         vector<Tile> tile_map;
         vector<Tile> collidable_tiles;
-        vector<pair<float, float>> line_overlay;
+        vector<Tile> keys;
         vector<Jumpscare> jumpscares;
         vector<Door> doors;
+        vector<pair<float, float>> line_overlay;
 };
 
 #endif

@@ -10,13 +10,13 @@ Player::Player(sf::RenderWindow &window, Spritesheet &spritesheet, SoundSystem &
       player(spritesheet.get_sprite(PLAYER), PLAYER)
 {
     sf::Vector2u size = window.getSize();
-    position = sf::Vector2f(size.x / 2 - (size.x / 2) % 64 - this->size, size.y / 2 - (size.y / 2) % 64);
+    position = sf::Vector2f(size.x / 2 - (size.x / 2) % 64 - 16, size.y / 2 - (size.y / 2) % 64);
     float tileX = (size.x / 2 / 64) * 64;
     float tileY = (size.y / 2 / 64) * 64;
 
     player.get_sprite().setOrigin(8.f, 8.f);
-    position.x = size.x / 2;
-    position.y = size.y / 2;
+    //position.x = size.x / 2;
+    //position.y = size.y / 2;
     player.set_position(position.x, position.y);
 
     player.set_scale(sf::Vector2f(this->size / 16.f, this->size / 16.f));
@@ -103,11 +103,6 @@ void Player::update()
         player.get_sprite().setOrigin(12.f, 8.f);
         player.set_scale({ size / 16.f, size / 16.f });
     }
-
-    hitbox.left = position.x - size * .5f;
-    hitbox.top  = position.y + size / 2.f - hitbox.height;
-
-
 }
 
 void Player::set_size(float x, float y)
@@ -126,4 +121,9 @@ void Player::move(float x, float y)
 void Player::draw(sf::RenderStates states)
 {
     window.draw(player.get_sprite(), states);
+}
+
+void Player::add_key(int id)
+{
+    inventory.push_back(id);
 }

@@ -1,14 +1,16 @@
 #include "door.h"
 
-Door::Door(sf::RenderWindow &window, Spritesheet &spritesheet, SoundSystem &soundsystem, sf::Vector2f position, sf::Vector2f size, int id)
-    : window(window),
-      spritesheet(spritesheet),
+Door::Door(sf::RenderWindow &window, Spritesheet &spritesheet, SoundSystem &soundsystem,
+           sf::Vector2f position, sf::Vector2f size, int id, int index)
+    : window(window), 
+      spritesheet(spritesheet), 
       soundsystem(soundsystem),
-      position(position),
-      size(size),
-      id(id)
+      position(position), 
+      size(size), 
+      id(id),
+      door(spritesheet.get_sprite(id), id, position, size)
 {
-    door = Tile(spritesheet.get_sprite(id), id);
+    //door = Tile(spritesheet.get_sprite(id), id);
     if(id == DOOR_YELLOW || id == DOOR_BLUE)
     {
         key = id + 10;

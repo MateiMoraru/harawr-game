@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <algorithm>
 
 #include "tile.h"
 #include "spritesheet.h"
@@ -22,6 +23,7 @@ class Player
 
         void move(float x, float y);
 
+        // fucking getters
         float get_x() const { return position.x; }
         float get_y() const { return position.y; }
         float get_x_offset() const { return offset.x; }
@@ -32,7 +34,10 @@ class Player
         sf::Sprite get_sprite() const { return player.get_sprite(); }
         sf::FloatRect get_hitbox() const { return hitbox; }
 
+        bool has_in_inventory(int id) const { return find(inventory.begin(), inventory.end(), id) != inventory.end(); }
+
         void set_size(float x, float y);
+        void add_key(int id);
 
     private:
         sf::RenderWindow& window;
@@ -43,11 +48,13 @@ class Player
         
         Tile player;
         
-        int size = 64 * 1.5f;
+        int size = 64 * .9f;
         
         sf::Vector2f moved;
         sf::Vector2f position;
-        float speed = 10.f;
+        float speed = 8.f;
+
+        vector<int> inventory;
 
 };
 
