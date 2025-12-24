@@ -1,19 +1,12 @@
 #include "jumpscare.h"
 
-vector<string> SCARY_PICTURES = {"assets/scary_jumpscare.png"};
+vector<string> SCARY_PICTURES = {"assets/sprites/freddy.png"};
 
 Jumpscare::Jumpscare(SoundSystem &soundsystem, sf::RenderWindow &window, int display_id, sf::Vector2f position, int index) : soundsystem(soundsystem), window(window), display_image_id(display_id), position(position), index(index)
 {
-    sprite = sf::Sprite();
-    sf::Texture texture;
-    texture.loadFromFile("assets/spritesheet.png");
+    texture.loadFromFile("assets/sprites/freddy.png");
     sprite.setTexture(texture);
-    sprite.setPosition(0, 0);
-
-    sf::FloatRect bounds = sprite.getLocalBounds();
-    float scalex = window.getSize().x / bounds.width;
-    float scaley = window.getSize().y / bounds.height;
-    sprite.setScale(scalex, scaley);
+    sprite.setScale(10.f, 10.f);
 }
 
 void Jumpscare::trigger()

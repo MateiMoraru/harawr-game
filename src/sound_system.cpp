@@ -3,13 +3,13 @@
 SoundSystem::SoundSystem()
 {
     sf::SoundBuffer buffer;
-    if (!buffer.loadFromFile("assets/background_music.mp3")) {
+    if (!buffer.loadFromFile("assets/sfx/background_music.mp3")) {
         std::cerr << "Failed to load sound!" << std::endl;
     }
 
     sounds.push_back(buffer);
 
-    if (!buffer.loadFromFile("assets/violin_abuse.mp3")) {
+    if (!buffer.loadFromFile("assets/sfx/violin_abuse.mp3")) {
         std::cerr << "Failed to load sound!" << std::endl;
     }
 

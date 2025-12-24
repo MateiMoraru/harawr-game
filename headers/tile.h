@@ -15,6 +15,8 @@ class Tile
         float get_x() const { return position.x; };
         float get_y() const { return position.y; };
         int get_id() const{ return sprite_id; };
+        sf::Sprite& get_sprite() { return sprite; }
+        const sf::Sprite& get_sprite() const { return sprite; }
 
         sf::FloatRect get_global_bounds();
 

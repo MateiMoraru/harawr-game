@@ -22,7 +22,7 @@ class Settings
 
     private:
         ifstream settings_file;
-        const string PATH_TO_FILE = "assets/settings.txt";
+        const string PATH_TO_FILE = "assets/data/settings.txt";
         const char* SEP = ": ";
         bool vsync, fullscreen;
         int width, height;

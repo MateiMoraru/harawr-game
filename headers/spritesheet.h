@@ -12,13 +12,16 @@ const int NULL_TEX = 0, // Error texture
           FLOOR = 1,
           BRICK = 2,
           JUMPSCARE_BLOCK = 3,
-          PLAYER = 10,
-          JUMPSCARE_1 = 20;
+          PLAYER = 9;
+
+extern vector<int> collidable;
 
 class Spritesheet
 {
     public:
         Spritesheet();
+
+        void draw(sf::RenderWindow &window);
 
         sf::Sprite get_sprite(int id);
 

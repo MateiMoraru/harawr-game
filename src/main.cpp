@@ -42,6 +42,8 @@ int main()
         window.setVerticalSyncEnabled(settings.get_vsync());
 
     Spritesheet spritesheet = Spritesheet();
+
+    Player player = Player(window, spritesheet);
     SoundSystem soundsystem = SoundSystem();
 
     TileMap tile_map = TileMap(window, spritesheet, soundsystem);
@@ -49,10 +51,8 @@ int main()
     sf::Clock clock;
     int frames = 0;
 
-    Text text = Text("assets/arial.ttf", 32);
+    Text text = Text("assets/font/arial.ttf", 32);
     text.set_position(32, 32);
-
-    Player player = Player(window, spritesheet);
 
     //Main Loop
 
@@ -109,8 +109,12 @@ int main()
         window.clear(sf::Color::Black);
 
         tile_map.draw(player, states);
+
+        player.draw(states);
+
         tile_map.draw_overlay();
 
+        //spritesheet.draw(window);
 
         text.draw(window);
 

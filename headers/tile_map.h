@@ -39,6 +39,7 @@ class TileMap
         int selected_tile_id = 0;
 
         vector<Tile> tile_map;
+        vector<Tile> collidable_tiles;
         vector<pair<float, float>> line_overlay;
         vector<Jumpscare> jumpscares;
 };
