@@ -31,7 +31,8 @@ const int NULL_TEX = 64, // Error texture
           PLAYER_RIGHT_1 = 20,
           PLAYER_RIGHT_2 = 21,
           KEY_RED = 22,
-          KEY_GREEN = 23;
+          KEY_GREEN = 23,
+          BUTTON = 24;
 
 extern vector<int> collidable;
 

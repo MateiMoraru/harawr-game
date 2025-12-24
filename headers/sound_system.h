@@ -13,7 +13,8 @@ const int BACKGROUND_SOUND = 0,
           JUMPSCARE_SOUND = 1,
           FOOTSTEP = 2,
           DOOR_OPEN = 3,
-          KEY_PICKUP = 4;
+          KEY_PICKUP = 4,
+          CLICK = 5;
 
 class SoundSystem
 {

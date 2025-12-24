@@ -10,13 +10,20 @@
 #include "text.h"
 #include "player.h"
 #include "sound_system.h"
+#include "main_menu.h"
 
 using namespace std;
 
 float delta = 0;
 
+//STATES
+const int IN_GAME = 0,
+          MAIN_MENU = 1;
+
 int main()
 {
+    int state = MAIN_MENU;
+
     Settings settings = Settings();
     
     // Creating The Window
@@ -48,8 +55,13 @@ int main()
     sf::Clock clock;
     int frames = 0;
 
-    Text text = Text("assets/font/pixelated.ttf", 32);
-    text.set_position(0, 0);
+    sf::Font font;
+    font.loadFromFile("assets/font/pixelated.ttf");
+
+    Text fps_text = Text(font, 32);
+    fps_text.set_position(0, 0);
+
+    MainMenu main_menu(window, spritesheet, soundsystem, font);
 
     //Main Loop
 
@@ -57,12 +69,14 @@ int main()
 
     soundsystem.play_loop_sound(BACKGROUND_SOUND);
 
+    int menu_return = -1;
+
     while (window.isOpen())
     {
         frames++;
         if (clock.getElapsedTime().asSeconds() >= 1.f)
         {
-            text.set_string("FPS: " + std::to_string(frames));
+            fps_text.set_string("FPS: " + std::to_string(frames));
             frames = 0;
             clock.restart();
         }
@@ -76,7 +90,7 @@ int main()
             if (event.type == sf::Event::KeyPressed)
             {
                 if (event.key.code == sf::Keyboard::Escape)
-                    window.close();
+                    state = MAIN_MENU;
                 if (event.key.code == sf::Keyboard::P)
                     tile_map.save();
             }
@@ -93,30 +107,43 @@ int main()
                 }
             }
         }
-
-        tile_map.update(player);
-        player.update();
-        
-        player.offset.x = player.get_x() - SCREEN_WIDTH / 2.f;
-        player.offset.y = player.get_y() - SCREEN_HEIGHT / 2.f;
-
-        states.transform = sf::Transform();
-        states.transform.translate(-player.get_x_offset(), -player.get_y_offset());
-        
         window.clear(sf::Color::Black);
 
-        tile_map.draw(player, states);
+        if(state == IN_GAME)
+        {
+            tile_map.update(player);
+            player.update();
+            
+            player.offset.x = player.get_x() - SCREEN_WIDTH / 2.f;
+            player.offset.y = player.get_y() - SCREEN_HEIGHT / 2.f;
 
-        player.draw(states);
+            states.transform = sf::Transform();
+            states.transform.translate(-player.get_x_offset(), -player.get_y_offset());
+            
 
-        tile_map.draw_jumpscares(player);
+            tile_map.draw(player, states);
 
-        tile_map.draw_overlay();
+            player.draw(states);
 
-        Tile temp_tile = Tile(spritesheet.get_sprite(tile_map.get_selected_block()), tile_map.get_selected_block(), {0, 100}, sf::Vector2f(64, 64));
-        temp_tile.draw(window);
+            tile_map.draw_jumpscares(player);
 
-        text.draw(window);
+            tile_map.draw_overlay();
+
+            Tile temp_tile = Tile(spritesheet.get_sprite(tile_map.get_selected_block()), tile_map.get_selected_block(), {0, 100}, sf::Vector2f(64, 64));
+            temp_tile.draw(window);
+        }
+        else if(state == MAIN_MENU)
+        {
+            menu_return = main_menu.update();
+            main_menu.draw();
+
+            if(menu_return == 1)
+                state = IN_GAME;
+            else if(menu_return == 2)
+                window.close();
+        }
+
+        fps_text.draw(window);
 
         window.display();
     }
