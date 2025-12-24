@@ -12,7 +12,7 @@ const int NULL_TEX = 0, // Error texture
           FLOOR = 1,
           BRICK = 2,
           JUMPSCARE_BLOCK = 3,
-          PLAYER = 9;
+          PLAYER = 8;
 
 extern vector<int> collidable;
 
@@ -29,7 +29,7 @@ class Spritesheet
         sf::Texture spritesheet;
         vector<sf::Sprite> sprites;
 
-        const int SIZE = 256;
+        const int SIZE = 128;
         const int TILE_SIZE = 16;
 };
 

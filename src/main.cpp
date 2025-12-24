@@ -51,8 +51,8 @@ int main()
     sf::Clock clock;
     int frames = 0;
 
-    Text text = Text("assets/font/arial.ttf", 32);
-    text.set_position(32, 32);
+    Text text = Text("assets/font/pixelated.ttf", 32);
+    text.set_position(0, 0);
 
     //Main Loop
 
@@ -114,7 +114,7 @@ int main()
 
         tile_map.draw_overlay();
 
-        //spritesheet.draw(window);
+        spritesheet.draw(window);
 
         text.draw(window);
 

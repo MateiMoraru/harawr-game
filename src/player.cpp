@@ -1,6 +1,6 @@
 #include "player.h"
 
-Player::Player(sf::RenderWindow &window, Spritesheet &spritesheet) : window(window), spritesheet(spritesheet), player(spritesheet.get_sprite(16), 0)
+Player::Player(sf::RenderWindow &window, Spritesheet &spritesheet) : window(window), spritesheet(spritesheet), player(spritesheet.get_sprite(PLAYER), PLAYER)
 {
     sf::Vector2u size = window.getSize();
     position = sf::Vector2f(size.x / 2 - (size.x / 2) % 64 - 64, size.y / 2 - (size.y / 2) % 64);
