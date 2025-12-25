@@ -18,6 +18,7 @@ float random_float(float min, float max)
     return dist(rng);
 }
 
+
 TileMap::TileMap(sf::RenderWindow &window, Spritesheet &spritesheet, SoundSystem &soundsystem) : window(window), spritesheet(spritesheet), soundsystem(soundsystem)
 {
 
@@ -27,6 +28,8 @@ TileMap::TileMap(sf::RenderWindow &window, Spritesheet &spritesheet, SoundSystem
             line_overlay.push_back(pair<float, float>(i, random_float(0.5, 15)));
     }
     load(soundsystem);
+
+    font.loadFromFile("assets/font/pixelated.ttf");
     
 }
 
@@ -71,7 +74,6 @@ void TileMap::update(Player &player, float delta_time)
         }
         else if(sf::Mouse::isButtonPressed(sf::Mouse::Right))
         {
-            cout << 11 << endl;
             float x = mouse_pos.x + player.offset.x;
             float y = mouse_pos.y + player.offset.y;
             
@@ -154,8 +156,8 @@ void TileMap::draw(Player &player, sf::RenderStates &states, float delta_time)
         float max_distance = (7.f + random_float(0.f, .1f)) * tile_size;
 
         tile.set_sprite_color(compute_light(
-            tile.get_x(), tile.get_y(), tile_size,     // tile position & size
-            player.get_x(), player.get_y(), player.get_size(), // player position & size
+            tile.get_x(), tile.get_y(), tile_size,
+            player.get_x(), player.get_y(), player.get_size(),
             max_distance
         ));
         tile.draw(window, states);
@@ -172,14 +174,11 @@ void TileMap::draw(Player &player, sf::RenderStates &states, float delta_time)
             float dy = door.get_y() - player.get_y() + player.get_size() / 2;
             float dist2 = sqrt(dx*dx + dy*dy);
 
-            // if(player.get_sprite().getGlobalBounds().intersects(door.get_sprite().getGlobalBounds()))
             if(dist2 < 2 * tile_size) 
             {
                 if(player.has_in_inventory(door.get_key())) 
                 {
                     door.unlock();
-                    // collidable_tiles[door.get_index()] = collidable_tiles.back();
-                    // collidable_tiles.pop_back();
                 }
             }
          
@@ -206,19 +205,44 @@ void TileMap::draw(Player &player, sf::RenderStates &states, float delta_time)
     }
 
 
-    for(Tile &key : keys)
+    for (size_t i = 0; i < keys.size(); )
     {
-        if(!key.get_global_bounds().intersects(view))
+        if (!keys[i].get_global_bounds().intersects(view))
+        {
+            ++i;
             continue;
+        }
 
-        key.set_sprite_color(compute_light(
-            key.get_x(), key.get_y(), tile_size,
-            player.get_x(), player.get_y(), player.get_size(),
-            max_distance
-        ));
-        key.draw(window, states);
+        if (player.get_sprite().getGlobalBounds().intersects(keys[i].get_global_bounds()))
+        {
+            player.add_key(keys[i].get_id());
+            soundsystem.play_sound(KEY_PICKUP);
+
+            keys[i] = keys.back();
+            keys.pop_back();
+            // DO NOT increment i
+        }
+        else
+        {
+            ++i;
+        }
     }
+}
 
+void TileMap::draw_notes(Player &player)
+{
+    for(Note &note : notes)
+    {
+        float dx = (note.get_x() + tile_size / 2.f) - (player.get_x() + player.get_size() / 2.f) + 64;
+        float dy = (note.get_y() + tile_size / 2.f) - (player.get_y() + player.get_size() / 2.f);
+        float dist = sqrt(dx * dx + dy * dy);
+
+        if(dist <= tile_size * 1.5)
+        {
+            cout << "AUCH" << endl;
+            note.draw();
+        }
+    }
 }
 
 void TileMap::draw_jumpscares(Player &player)
@@ -279,6 +303,7 @@ void TileMap::save()
 }
 void TileMap::load(SoundSystem &soundsystem)
 {
+
     sf::Clock timer;
 
     tile_map.clear();
@@ -344,6 +369,11 @@ void TileMap::load(SoundSystem &soundsystem)
                 sf::Vector2f(x, y),
                 sf::Vector2f(tile_size, tile_size)
             );
+        }
+
+        if(id == BUTTON)
+        {
+            notes.emplace_back(window, spritesheet, font, 1, sf::Vector2f{x, y});
         }
     }
 

@@ -13,7 +13,10 @@ class Note
 {
     public:
         Note();
-        Note(sf::RenderWindow &window, Spritesheet &spritesheet, sf::Font &font, int number);
+        Note(sf::RenderWindow &window, Spritesheet &spritesheet, sf::Font &font, int number, sf::Vector2f position);
+
+        float get_x() const { return position.x; }
+        float get_y() const { return position.y; }
 
         void draw();
 
@@ -22,6 +25,7 @@ class Note
         sf::Font &font;
         Tile tile;
 
+        sf::Vector2f position;
         int number;
         vector<string> text;
         vector<Text> lines;

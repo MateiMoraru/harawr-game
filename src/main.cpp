@@ -120,7 +120,7 @@ int main()
 
         if(state == IN_GAME)
 {
-            std::thread update_thread(&TileMap::update, &tile_map, ref(player), ref(delta_time));
+            thread update_thread(&TileMap::update, &tile_map, ref(player), ref(delta_time));
             update_thread.join();
 
             player.update(delta_time);
@@ -135,6 +135,7 @@ int main()
             player.draw(states);
             tile_map.draw_jumpscares(player);
             tile_map.draw_overlay();
+            tile_map.draw_notes(player);
 
             temp_tile.set_sprite(spritesheet.get_sprite(tile_map.get_selected_block()), tile_map.get_selected_block());
             temp_tile.draw(window);

@@ -12,6 +12,7 @@
 #include "player.h"
 #include "jumpscare.h"
 #include "door.h"
+#include "note.h"
 
 using namespace std;
 
@@ -24,6 +25,7 @@ class TileMap
         void draw(Player &player, sf::RenderStates &states, float delta_time);
         void draw_overlay();
         void draw_jumpscares(Player &player);
+        void draw_notes(Player &player);
 
         void save();
         void load(SoundSystem &soundsystem);
@@ -37,6 +39,7 @@ class TileMap
         Spritesheet& spritesheet;
         SoundSystem &soundsystem;
 
+        sf::Font font;
         sf::RectangleShape thick_line;
 
         int tile_size = 64;
@@ -51,7 +54,9 @@ class TileMap
         vector<Tile> keys;
         vector<Jumpscare> jumpscares;
         vector<Door> doors;
+        vector<Note> notes;
         vector<pair<float, float>> line_overlay;
+
 };
 
 #endif
