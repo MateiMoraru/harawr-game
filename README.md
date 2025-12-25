@@ -10,4 +10,5 @@
 
 ### Current state
 
-![current state](harawr-game/assets/screenshots/s2.png)
+![current state](assets/screenshots/s2.png)
+![current state](aasets/screenshots/s3.png)
