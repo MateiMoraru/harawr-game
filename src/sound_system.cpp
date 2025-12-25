@@ -52,6 +52,24 @@ SoundSystem::SoundSystem()
     }
 
     sounds.push_back(buffer);
+
+    if (!buffer.loadFromFile("assets/sfx/ear_ring.mp3")) {
+        std::cerr << "Failed to load sound!" << std::endl;
+    }
+
+    sounds.push_back(buffer);
+
+    if (!buffer.loadFromFile("assets/sfx/breathing.mp3")) {
+        std::cerr << "Failed to load sound!" << std::endl;
+    }
+
+    sounds.push_back(buffer);
+
+    if (!buffer.loadFromFile("assets/sfx/page_turn.mp3")) {
+        std::cerr << "Failed to load sound!" << std::endl;
+    }
+
+    sounds.push_back(buffer);
 }
 
 void SoundSystem::play_sound(int id)

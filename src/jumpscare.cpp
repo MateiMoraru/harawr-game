@@ -11,7 +11,8 @@ Jumpscare::Jumpscare(SoundSystem &soundsystem, sf::RenderWindow &window, int dis
 
 void Jumpscare::trigger()
 {
-    soundsystem.play_sound(JUMPSCARE_SOUND);
+    soundsystem.play_sound(EAR_RING);
+    soundsystem.play_sound(BREATHING);
     triggered = true;
 }
 

@@ -1,8 +1,6 @@
 # HARAWR GAME (horror game)
 
-### TODO
-- Add notes
-- Add Tasks list
+### TODOs
 - Create Map
 
 ### STORY

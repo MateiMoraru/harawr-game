@@ -136,6 +136,7 @@ int main()
             tile_map.draw_jumpscares(player);
             tile_map.draw_overlay();
             tile_map.draw_notes(player);
+            tile_map.draw_tasks();
 
             temp_tile.set_sprite(spritesheet.get_sprite(tile_map.get_selected_block()), tile_map.get_selected_block());
             temp_tile.draw(window);

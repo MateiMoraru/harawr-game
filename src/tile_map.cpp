@@ -19,7 +19,7 @@ float random_float(float min, float max)
 }
 
 
-TileMap::TileMap(sf::RenderWindow &window, Spritesheet &spritesheet, SoundSystem &soundsystem) : window(window), spritesheet(spritesheet), soundsystem(soundsystem)
+TileMap::TileMap(sf::RenderWindow &window, Spritesheet &spritesheet, SoundSystem &soundsystem) : window(window), spritesheet(spritesheet), soundsystem(soundsystem), tasks(window, font)
 {
 
     for(int i = 0; i < 2000; i += 150 + random_float(-100, 0))
@@ -30,6 +30,7 @@ TileMap::TileMap(sf::RenderWindow &window, Spritesheet &spritesheet, SoundSystem
     load(soundsystem);
 
     font.loadFromFile("assets/font/pixelated.ttf");
+    tasks.set_font(font);
     
 }
 
@@ -207,20 +208,22 @@ void TileMap::draw(Player &player, sf::RenderStates &states, float delta_time)
 
     for (size_t i = 0; i < keys.size(); )
     {
-        if (!keys[i].get_global_bounds().intersects(view))
+        Tile &key = keys[i];
+        key.set_sprite_color(compute_light(key.get_x(), key.get_y(), tile_size, player.get_x(), player.get_y(), tile_size));
+        key.draw(window, states);
+        if (!key.get_global_bounds().intersects(view))
         {
             ++i;
             continue;
         }
 
-        if (player.get_sprite().getGlobalBounds().intersects(keys[i].get_global_bounds()))
+        if (player.get_sprite().getGlobalBounds().intersects(key.get_global_bounds()))
         {
-            player.add_key(keys[i].get_id());
+            player.add_key(key.get_id());
             soundsystem.play_sound(KEY_PICKUP);
 
-            keys[i] = keys.back();
+            key = keys.back();
             keys.pop_back();
-            // DO NOT increment i
         }
         else
         {
@@ -239,7 +242,12 @@ void TileMap::draw_notes(Player &player)
 
         if(dist <= tile_size * 1.5)
         {
-            cout << "AUCH" << endl;
+            if(!note.is_displayed())
+            {
+                soundsystem.play_sound(PAGE_TURN);
+                note.display();
+            }
+            
             note.draw();
         }
     }
@@ -264,6 +272,11 @@ void TileMap::draw_jumpscares(Player &player)
             tile_map.pop_back();
         }
     }
+}
+
+void TileMap::draw_tasks()
+{
+    tasks.draw();
 }
 
 void TileMap::draw_overlay()

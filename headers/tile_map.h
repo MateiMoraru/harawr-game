@@ -13,6 +13,7 @@
 #include "jumpscare.h"
 #include "door.h"
 #include "note.h"
+#include "tasks.h"
 
 using namespace std;
 
@@ -26,6 +27,7 @@ class TileMap
         void draw_overlay();
         void draw_jumpscares(Player &player);
         void draw_notes(Player &player);
+        void draw_tasks();
 
         void save();
         void load(SoundSystem &soundsystem);
@@ -41,6 +43,7 @@ class TileMap
 
         sf::Font font;
         sf::RectangleShape thick_line;
+        Tasks tasks;
 
         int tile_size = 64;
 

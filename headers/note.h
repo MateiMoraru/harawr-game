@@ -17,8 +17,11 @@ class Note
 
         float get_x() const { return position.x; }
         float get_y() const { return position.y; }
+        bool is_displayed() const { return displaying; }
+
 
         void draw();
+        void display() { displaying = true; };
 
     private:
         sf::RenderWindow &window;
@@ -29,6 +32,7 @@ class Note
         int number;
         vector<string> text;
         vector<Text> lines;
+        bool displaying = false;
 };
 
 #endif
