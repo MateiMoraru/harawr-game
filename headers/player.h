@@ -52,7 +52,7 @@ class Player
         
         sf::Vector2f moved;
         sf::Vector2f position;
-        float speed = 250.f;
+        float speed = 500.f;
 
         vector<int> inventory;
 

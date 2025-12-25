@@ -25,6 +25,7 @@ int main()
 {
     sf::Clock clock;
     sf::Clock delta_clock;
+    sf::Clock fps_clock; 
     int state = MAIN_MENU;
 
     Settings settings = Settings();
@@ -64,8 +65,11 @@ int main()
 
     MainMenu main_menu(window, spritesheet, soundsystem, font);
 
-    Text fps_text = Text(font, 32);
-    fps_text.set_position(0, 0);
+
+    sf::Font fps_font;
+    fps_font.loadFromFile("assets/font/pixelated.ttf");
+    Text fps_text = Text(fps_font, 32);
+    fps_text.set_position(0, 100);
 
     //Main Loop
 
@@ -80,14 +84,14 @@ int main()
 
     while (window.isOpen())
     {
-        sf::Time dt = clock.restart();
-        delta_time = dt.asSeconds();
+        float delta_time = delta_clock.restart().asSeconds();
         frames++;
-        if (clock.getElapsedTime().asSeconds() >= 1.f)
+
+        if (fps_clock.getElapsedTime().asSeconds() >= 1.f)
         {
             fps_text.set_string("FPS: " + std::to_string(frames));
             frames = 0;
-            clock.restart();
+            fps_clock.restart();
         }
 
         sf::Event event;
@@ -120,8 +124,11 @@ int main()
 
         if(state == IN_GAME)
 {
-            thread update_thread(&TileMap::update, &tile_map, ref(player), ref(delta_time));
-            update_thread.join();
+            //thread update_thread(&TileMap::update, &tile_map, ref(player), ref(delta_time));
+            //update_thread.detach();
+
+            tile_map.update(player, delta_time);
+
 
             player.update(delta_time);
 
@@ -153,6 +160,7 @@ int main()
                 window.close();
         }
 
+        window.setView(window.getDefaultView());
         fps_text.draw(window);
 
         window.display();

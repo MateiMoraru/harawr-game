@@ -46,21 +46,26 @@ void TileMap::update(Player &player, float delta_time)
     if(is_editing)
     {
         sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
+        
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
         {
             float x = mouse_pos.x + player.offset.x;
             float y = mouse_pos.y + player.offset.y;
             
+            int tilex = (int)std::floor(x / tile_size);
+            int tiley = (int)std::floor(y / tile_size);
+
             sf::Vector2f mouse_pos_relative(
-                x - (int)(x) % tile_size,
-                y - (int)(y) % tile_size - tile_size
+                tilex * tile_size,
+                tiley * tile_size
             );
+
             
             Tile temp_tile = Tile(spritesheet.get_sprite(selected_tile_id), selected_tile_id, mouse_pos_relative, sf::Vector2f(tile_size, tile_size));
 
             bool collides = false;
 
-            for(int i = tile_map.size() - 10; i < tile_map.size(); i++)
+            for(int i = tile_map.size() - 2; i < tile_map.size(); i++)
             {
                 if(tile_map[i].collides(temp_tile))
                 {
@@ -309,7 +314,7 @@ void TileMap::save()
     }
     for(Jumpscare &j : jumpscares)
     {
-        out << JUMPSCARE_BLOCK << ' ' << j.get_x() << ' ' << j.get_y() << endl;
+        out << JUMPSCARE_BLOCK << ' ' << j.get_x() << ' ' << j.get_y() << ' ' <<  j.get_id() << endl;
     }
 
     cout << "Map saved" << endl;
@@ -335,7 +340,7 @@ void TileMap::load(SoundSystem &soundsystem)
         return;
     }
 
-    float x, y, id;
+    float x, y, id, jumpscare_temp;
     while(in >> id >> x >> y)
     {
         if(!(id == KEY_YELLOW || id == KEY_BLUE || id == KEY_RED || id == KEY_GREEN) && !(id >= DOOR_YELLOW && id <= DOOR_GREEN))
@@ -349,7 +354,10 @@ void TileMap::load(SoundSystem &soundsystem)
         }
 
         if(id == JUMPSCARE_BLOCK)
-            jumpscares.emplace_back(soundsystem, window, 0, sf::Vector2f(x, y), tile_map.size() - 1);
+        {
+            in >> jumpscare_temp;
+            jumpscares.emplace_back(soundsystem, window, jumpscare_temp, sf::Vector2f(x, y), tile_map.size() - 1);
+        }
 
         if(find(collidable.begin(), collidable.end(), id) != collidable.end())
         {
@@ -396,6 +404,6 @@ void TileMap::load(SoundSystem &soundsystem)
 
 void TileMap::scroll(int delta)
 {
-    selected_tile_id += delta;
+    selected_tile_id = clamp(selected_tile_id + delta, 0, 64);
 }
 

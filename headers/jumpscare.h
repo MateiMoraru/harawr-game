@@ -25,6 +25,7 @@ class Jumpscare
         float get_x() const { return position.x; }
         float get_y() const { return position.y; }
         int get_index() const { return index; }
+        int get_id() const { return display_image_id; }
         bool is_triggered() const { return triggered; }
         bool is_expired() const { return alpha < 250; }
         bool is_deleted() const { return deleted; }

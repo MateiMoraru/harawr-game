@@ -4,7 +4,7 @@ vector<string> SCARY_PICTURES = {"assets/sprites/jumpscare_1.png"};
 
 Jumpscare::Jumpscare(SoundSystem &soundsystem, sf::RenderWindow &window, int display_id, sf::Vector2f position, int index) : soundsystem(soundsystem), window(window), display_image_id(display_id), position(position), index(index)
 {
-    texture.loadFromFile(SCARY_PICTURES[0]);
+    texture.loadFromFile(SCARY_PICTURES[display_id]);
     sprite.setTexture(texture);
     sprite.setScale(window.getSize().x / texture.getSize().x, window.getSize().y / texture.getSize().y);
 }
