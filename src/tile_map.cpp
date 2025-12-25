@@ -30,8 +30,15 @@ TileMap::TileMap(sf::RenderWindow &window, Spritesheet &spritesheet, SoundSystem
     
 }
 
-void TileMap::update(Player &player)
+void TileMap::update(Player &player, float delta_time)
 {
+    elapsed_time_door_knock += delta_time;
+    if(elapsed_time_door_knock > 15.0f && random_float(0, 1.f) >= 0.99f)
+    {
+        soundsystem.play_sound(DOOR_KNOCK, 0.5, 2);
+        elapsed_time_door_knock = 0;
+    }
+
     if(is_editing)
     {
         sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
@@ -94,19 +101,19 @@ void TileMap::update(Player &player)
         {
             if(tile.get_x() < player.get_x() && player.get_moved().x < 0)
             {
-                player.move(player.get_speed(), 0);
+                player.move(player.get_speed() * delta_time, 0);
             }
             if(tile.get_x() > player.get_x() && player.get_moved().x > 0)
             {
-                player.move(-player.get_speed(), 0);
+                player.move(-player.get_speed() * delta_time, 0);
             }
             if(tile.get_y() < player.get_y() && player.get_moved().y < 0)
             {
-                player.move(0, player.get_speed());
+                player.move(0, player.get_speed() * delta_time);
             }
             if(tile.get_y() > player.get_y() && player.get_moved().y > 0)
             {
-                player.move(0, -player.get_speed());
+                player.move(0, -player.get_speed() * delta_time);
             }
         }
     }
@@ -134,7 +141,7 @@ void TileMap::update(Player &player)
     }
 }
 
-void TileMap::draw(Player &player, sf::RenderStates &states)
+void TileMap::draw(Player &player, sf::RenderStates &states, float delta_time)
 {
     float max_distance = (7.f + random_float(0.f, 0.2f)) * tile_size;
     float brightness_min = random_float(0.f, 0.0f);
@@ -180,19 +187,19 @@ void TileMap::draw(Player &player, sf::RenderStates &states)
             {
                 if(door.get_x() < player.get_x() && player.get_moved().x < 0) 
                 {
-                    player.move(player.get_speed(), 0);
+                    player.move(player.get_speed() * delta_time, 0);
                 }
                 if(door.get_x() > player.get_x() && player.get_moved().x > 0) 
                 {
-                    player.move(-player.get_speed(), 0);
+                    player.move(-player.get_speed() * delta_time, 0);
                 }
                 if(door.get_y() < player.get_y() && player.get_moved().y < 0) 
                 {
-                    player.move(0, player.get_speed());
+                    player.move(0, player.get_speed() * delta_time);
                 }
                 if(door.get_y() > player.get_y() && player.get_moved().y > 0) 
                 {
-                    player.move(0, -player.get_speed());
+                    player.move(0, -player.get_speed() * delta_time);
                 }
             }
         }
@@ -262,6 +269,10 @@ void TileMap::save()
     for(Tile &key : keys)
     {
         out << key.get_id() << ' ' << key.get_x() << ' ' << key.get_y() << endl;
+    }
+    for(Jumpscare &j : jumpscares)
+    {
+        out << JUMPSCARE_BLOCK << ' ' << j.get_x() << ' ' << j.get_y() << endl;
     }
 
     cout << "Map saved" << endl;

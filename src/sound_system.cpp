@@ -46,6 +46,12 @@ SoundSystem::SoundSystem()
     }
 
     sounds.push_back(buffer);
+
+    if (!buffer.loadFromFile("assets/sfx/door_knock.mp3")) {
+        std::cerr << "Failed to load sound!" << std::endl;
+    }
+
+    sounds.push_back(buffer);
 }
 
 void SoundSystem::play_sound(int id)

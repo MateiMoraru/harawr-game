@@ -20,8 +20,8 @@ class TileMap
     public:
         TileMap(sf::RenderWindow &window, Spritesheet &spritesheet, SoundSystem &soundsystem);
 
-        void update(Player &player);
-        void draw(Player &player, sf::RenderStates &states);
+        void update(Player &player, float delta_time);
+        void draw(Player &player, sf::RenderStates &states, float delta_time);
         void draw_overlay();
         void draw_jumpscares(Player &player);
 
@@ -44,6 +44,7 @@ class TileMap
         bool is_editing = true;
         bool left_mouse_was_pressed = false;
         int selected_tile_id = 0;
+        float elapsed_time_door_knock = 0;
 
         vector<Tile> tile_map;
         vector<Tile> collidable_tiles;

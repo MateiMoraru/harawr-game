@@ -14,7 +14,8 @@ const int BACKGROUND_SOUND = 0,
           FOOTSTEP = 2,
           DOOR_OPEN = 3,
           KEY_PICKUP = 4,
-          CLICK = 5;
+          CLICK = 5,
+          DOOR_KNOCK = 6;
 
 class SoundSystem
 {

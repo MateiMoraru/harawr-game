@@ -76,12 +76,12 @@ int main()
     int menu_return = -1;
     cout << "Elapsed loading time: " << clock.getElapsedTime().asSeconds() << "s" << endl;
     Tile temp_tile;
-    float delta_seconds = 0;
-    
+    float delta_time = 0;
+
     while (window.isOpen())
     {
         sf::Time dt = clock.restart();
-        delta_seconds = dt.asSeconds();
+        delta_time = dt.asSeconds();
         frames++;
         if (clock.getElapsedTime().asSeconds() >= 1.f)
         {
@@ -120,10 +120,10 @@ int main()
 
         if(state == IN_GAME)
 {
-            std::thread update_thread(&TileMap::update, &tile_map, std::ref(player));
+            std::thread update_thread(&TileMap::update, &tile_map, ref(player), ref(delta_time));
             update_thread.join();
 
-            player.update(delta_seconds);
+            player.update(delta_time);
 
             player.offset.x = player.get_x() - SCREEN_WIDTH / 2.f;
             player.offset.y = player.get_y() - SCREEN_HEIGHT / 2.f;
@@ -131,7 +131,7 @@ int main()
             states.transform = sf::Transform();
             states.transform.translate(-player.get_x_offset(), -player.get_y_offset());
 
-            tile_map.draw(player, states);
+            tile_map.draw(player, states, delta_time);
             player.draw(states);
             tile_map.draw_jumpscares(player);
             tile_map.draw_overlay();
