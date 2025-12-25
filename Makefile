@@ -1,7 +1,12 @@
-LIBS = -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lsfml-network
+CXX = g++
+CXXFLAGS = -std=c++20 -O2 -Iheaders -IC:/SFML/include
+LDFLAGS = -LC:/SFML/lib -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lsfml-network
 
-main:
-	/usr/bin/time -f "%e" g++ src/*.cpp -o bin/main.exe  -Iheaders $(LIBS)
+SRC = src/*.cpp
+OUT = bin/main.exe
 
-run: main
-	./bin/main.exe
+all:
+	$(CXX) $(SRC) -o $(OUT) $(CXXFLAGS) $(LDFLAGS)
+
+clean:
+	rm -f $(OUT)
