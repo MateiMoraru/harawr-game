@@ -2,6 +2,7 @@
 #include <SFML/Window.hpp>
 #include <iostream>
 #include <fstream>
+#include <thread>
 
 #include "settings.h"
 #include "tile.h"
@@ -22,6 +23,8 @@ const int IN_GAME = 0,
 
 int main()
 {
+    sf::Clock clock;
+    sf::Clock delta_clock;
     int state = MAIN_MENU;
 
     Settings settings = Settings();
@@ -47,21 +50,22 @@ int main()
     else 
         window.setVerticalSyncEnabled(settings.get_vsync());
 
+    sf::Mouse::setPosition({SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2});
+
     Spritesheet spritesheet = Spritesheet();
     SoundSystem soundsystem = SoundSystem();
     Player player = Player(window, spritesheet, soundsystem);
     TileMap tile_map = TileMap(window, spritesheet, soundsystem);
     
-    sf::Clock clock;
     int frames = 0;
 
     sf::Font font;
     font.loadFromFile("assets/font/pixelated.ttf");
 
+    MainMenu main_menu(window, spritesheet, soundsystem, font);
+
     Text fps_text = Text(font, 32);
     fps_text.set_position(0, 0);
-
-    MainMenu main_menu(window, spritesheet, soundsystem, font);
 
     //Main Loop
 
@@ -70,9 +74,14 @@ int main()
     soundsystem.play_loop_sound(BACKGROUND_SOUND);
 
     int menu_return = -1;
-
+    cout << "Elapsed loading time: " << clock.getElapsedTime().asSeconds() << "s" << endl;
+    Tile temp_tile;
+    float delta_seconds = 0;
+    
     while (window.isOpen())
     {
+        sf::Time dt = clock.restart();
+        delta_seconds = dt.asSeconds();
         frames++;
         if (clock.getElapsedTime().asSeconds() >= 1.f)
         {
@@ -110,28 +119,27 @@ int main()
         window.clear(sf::Color::Black);
 
         if(state == IN_GAME)
-        {
-            tile_map.update(player);
-            player.update();
-            
+{
+            std::thread update_thread(&TileMap::update, &tile_map, std::ref(player));
+            update_thread.join();
+
+            player.update(delta_seconds);
+
             player.offset.x = player.get_x() - SCREEN_WIDTH / 2.f;
             player.offset.y = player.get_y() - SCREEN_HEIGHT / 2.f;
 
             states.transform = sf::Transform();
             states.transform.translate(-player.get_x_offset(), -player.get_y_offset());
-            
 
             tile_map.draw(player, states);
-
             player.draw(states);
-
             tile_map.draw_jumpscares(player);
-
             tile_map.draw_overlay();
 
-            Tile temp_tile = Tile(spritesheet.get_sprite(tile_map.get_selected_block()), tile_map.get_selected_block(), {0, 100}, sf::Vector2f(64, 64));
+            temp_tile.set_sprite(spritesheet.get_sprite(tile_map.get_selected_block()), tile_map.get_selected_block());
             temp_tile.draw(window);
         }
+
         else if(state == MAIN_MENU)
         {
             menu_return = main_menu.update();

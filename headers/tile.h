@@ -6,7 +6,7 @@
 class Tile
 {
     public:
-        Tile();
+        Tile() = default;
         Tile(sf::Sprite sprite, int sprite_id);
         Tile(sf::Sprite sprite, int sprite_id, const sf::Vector2f &position, const sf::Vector2f &size);
 

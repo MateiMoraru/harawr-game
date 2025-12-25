@@ -75,3 +75,15 @@ void SoundSystem::play_loop_sound(int id)
     s.play();
     s.setLoop(true);
 }
+
+SoundSystem::~SoundSystem()
+{
+    for (auto& s : active_sounds)
+        s.stop();
+
+    for (auto& s : looped)
+        s.stop();
+
+    active_sounds.clear();
+    looped.clear();
+}

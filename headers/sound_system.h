@@ -20,6 +20,7 @@ class SoundSystem
 {
     public:
         SoundSystem();
+        ~SoundSystem();
         void play_sound(int id);
         void play_loop_sound(int id);
         void play_sound(int id, float min, float max);

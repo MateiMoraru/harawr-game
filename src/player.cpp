@@ -10,7 +10,7 @@ Player::Player(sf::RenderWindow &window, Spritesheet &spritesheet, SoundSystem &
       player(spritesheet.get_sprite(PLAYER), PLAYER)
 {
     sf::Vector2u size = window.getSize();
-    position = sf::Vector2f(size.x / 2 - (size.x / 2) % 64 - 16, size.y / 2 - (size.y / 2) % 64);
+    position = sf::Vector2f(size.x / 2 - (size.x / 2) % 64 - 16, size.y / 2 - (size.y / 2) % 64 - 16);
     float tileX = (size.x / 2 / 64) * 64;
     float tileY = (size.y / 2 / 64) * 64;
 
@@ -28,33 +28,33 @@ Player::Player(sf::RenderWindow &window, Spritesheet &spritesheet, SoundSystem &
     hitbox.height = 64;
 }
 
-void Player::update()
+void Player::update(float delta_time)
 {
     moved.x = 0;
     moved.y = 0;
     
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
     {
-        move(0.f, -speed);
-        moved.y = -speed; 
+        move(0.f, -speed * delta_time);
+        moved.y = -speed * delta_time; 
     }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
     {
-        move(-speed, 0.f);
-        moved.x = -speed;
+        move(-speed * delta_time, 0.f);
+        moved.x = -speed * delta_time;
     }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
     {
-        move(0.f, speed);
-        moved.y = speed;
+        move(0.f, speed * delta_time);
+        moved.y = speed * delta_time;
     }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
     {
-        move(speed, 0.f);
-        moved.x = speed; 
+        move(speed * delta_time, 0.f);
+        moved.x = speed * delta_time; 
     }
 
     if(moved.y < 0.f)

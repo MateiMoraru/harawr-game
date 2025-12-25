@@ -1,5 +1,7 @@
 #include "animation.h"
 
+sf::Time footstep_timer = sf::Time::Zero;
+
 Animation::Animation(Spritesheet &spritesheet, int range, float rate, int start_id)
 : spritesheet(spritesheet), range(range), rate(rate), start_frame(start_id), soundsystem(nullptr)
 {
@@ -57,16 +59,22 @@ void Animation::update(int id)
 
     delta += clock.restart();
 
-    if (delta.asSeconds() >= rate)
+    while (delta.asSeconds() >= rate)
     {
         current_sprite_id =
             start_frame + (current_sprite_id - start_frame + 1) % range;
-
         delta -= sf::seconds(rate);
-        if(passed % 3 == 0)
+
+        // Track footstep independently
+        footstep_timer += sf::seconds(rate);
+
+        if(passed % 3 == 0 && footstep_timer.asSeconds() >= rate)
+        {
             soundsystem->play_sound(id, 0.5f, 2.f);
+            footstep_timer = sf::Time::Zero;
+        }
+
         passed++;
     }
 }
-
 

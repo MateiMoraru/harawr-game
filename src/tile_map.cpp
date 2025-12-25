@@ -1,17 +1,14 @@
 #include "tile_map.h"
 
-inline sf::Color compute_light(float obj_x, float obj_y, float obj_size,
-                               float player_x, float player_y, float player_size,
-                               float max_distance, float brightness_min = 0.01f, float brightness_max = 0.9f)
+inline sf::Color compute_light(float obj_x, float obj_y, float obj_size, float player_x, float player_y, float player_size, float max_distance = 10.0f, float brightness_min = 0.04f, float brightness_max = 0.5f)
 {
-    // Distance between centers
     float dx = (obj_x + obj_size / 2.f) - (player_x + player_size / 2.f) + 64;
     float dy = (obj_y + obj_size / 2.f) - (player_y + player_size / 2.f);
     float dist2 = dx * dx + dy * dy;
     float max_dist2 = max_distance * max_distance;
     float brightness = std::clamp(1.f - dist2 / max_dist2, brightness_min, brightness_max);
     sf::Uint8 alpha = static_cast<sf::Uint8>(255 * brightness);
-    return sf::Color(255, 217, 166, alpha); // same as before
+    return sf::Color(255, 217, 166, alpha);
 }
 
 float random_float(float min, float max)
@@ -63,6 +60,26 @@ void TileMap::update(Player &player)
             if(!collides)
             {
                 tile_map.push_back(temp_tile);
+            }
+        }
+        else if(sf::Mouse::isButtonPressed(sf::Mouse::Right))
+        {
+            cout << 11 << endl;
+            float x = mouse_pos.x + player.offset.x;
+            float y = mouse_pos.y + player.offset.y;
+            
+            for(int i = 0; i < tile_map.size(); i++)
+            {
+                if (x > tile_map[i].get_x() &&
+                    x < tile_map[i].get_x() + tile_size &&
+                    y > tile_map[i].get_y() &&
+                    y < tile_map[i].get_y() + tile_size)
+                {
+                    std::swap(tile_map[i], tile_map.back());
+                    tile_map.pop_back();
+                    break;
+                }
+                
             }
         }
     }
@@ -119,8 +136,8 @@ void TileMap::update(Player &player)
 
 void TileMap::draw(Player &player, sf::RenderStates &states)
 {
-    float max_distance = (7.f + random_float(0.f, 0.1f)) * tile_size;
-    float brightness_min = random_float(0.f, 0.01f);
+    float max_distance = (7.f + random_float(0.f, 0.2f)) * tile_size;
+    float brightness_min = random_float(0.f, 0.0f);
     sf::FloatRect view(player.get_x_offset(), player.get_y_offset(), window.getSize().x, window.getSize().y);
 
     for(Tile &tile : tile_map)
@@ -246,45 +263,82 @@ void TileMap::save()
     {
         out << key.get_id() << ' ' << key.get_x() << ' ' << key.get_y() << endl;
     }
-}
 
+    cout << "Map saved" << endl;
+}
 void TileMap::load(SoundSystem &soundsystem)
 {
+    sf::Clock timer;
+
+    tile_map.clear();
+    doors.clear();
+    keys.clear();
+    collidable_tiles.clear();
+    tile_map.reserve(1000);
+    doors.reserve(10);
+    keys.reserve(3);
+    collidable_tiles.reserve(1000);
+
     ifstream in("assets/data/map.txt");
     if(!in.is_open())
     {
         cout << "Nothing to load :(" << endl;
         return;
     }
-    
+
     float x, y, id;
-    while(in >> id)
+    while(in >> id >> x >> y)
     {
-        in >> x;
-        in >> y;
-
-        Tile tile(spritesheet.get_sprite(id), id, sf::Vector2f(x, y), sf::Vector2f(tile_size, tile_size));
-
         if(!(id == KEY_YELLOW || id == KEY_BLUE || id == KEY_RED || id == KEY_GREEN) && !(id >= DOOR_YELLOW && id <= DOOR_GREEN))
-            tile_map.push_back(tile);
+        {
+            tile_map.emplace_back(
+                spritesheet.get_sprite(id),
+                id,
+                sf::Vector2f(x, y),
+                sf::Vector2f(tile_size, tile_size)
+            );
+        }
 
         if(id == JUMPSCARE_BLOCK)
-            jumpscares.push_back(Jumpscare(soundsystem, window, 0, sf::Vector2f(x, y), tile_map.size() - 1));
+            jumpscares.emplace_back(soundsystem, window, 0, sf::Vector2f(x, y), tile_map.size() - 1);
+
         if(find(collidable.begin(), collidable.end(), id) != collidable.end())
         {
-            collidable_tiles.push_back(tile);
+            collidable_tiles.emplace_back(
+                spritesheet.get_sprite(id),
+                id,
+                sf::Vector2f(x, y),
+                sf::Vector2f(tile_size, tile_size)
+            );
         }
+
         if(id >= DOOR_YELLOW && id <= DOOR_GREEN)
         {
-            Door door = Door(window, spritesheet, soundsystem, sf::Vector2f(x, y), sf::Vector2f(tile_size, tile_size), id, collidable_tiles.size() - 1);
-            doors.push_back(door);
+            doors.emplace_back(
+                window,
+                spritesheet,
+                soundsystem,
+                sf::Vector2f(x, y),
+                sf::Vector2f(tile_size, tile_size),
+                id,
+                collidable_tiles.size() - 1
+            );
         }
+
         if(id == KEY_YELLOW || id == KEY_BLUE || id == KEY_RED || id == KEY_GREEN)
         {
-            keys.push_back(tile);
+            keys.emplace_back(
+                spritesheet.get_sprite(id),
+                id,
+                sf::Vector2f(x, y),
+                sf::Vector2f(tile_size, tile_size)
+            );
         }
     }
+
+    cout << "Map loaded successfully (" << timer.getElapsedTime().asSeconds() << "s)" << endl;
 }
+
 
 void TileMap::scroll(int delta)
 {

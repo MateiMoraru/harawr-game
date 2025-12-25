@@ -19,7 +19,7 @@ class Player
         sf::Vector2f offset;
 
         void draw(sf::RenderStates states);
-        void update();
+        void update(float delta_time);
 
         void move(float x, float y);
 
@@ -52,7 +52,7 @@ class Player
         
         sf::Vector2f moved;
         sf::Vector2f position;
-        float speed = 8.f;
+        float speed = 200.f;
 
         vector<int> inventory;
 
