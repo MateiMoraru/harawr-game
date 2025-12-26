@@ -17,6 +17,7 @@ class Note
 
         float get_x() const { return position.x; }
         float get_y() const { return position.y; }
+        int get_id() const { return number; }
         bool is_displayed() const { return displaying; }
 
 

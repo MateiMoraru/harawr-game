@@ -10,15 +10,14 @@ Door::Door(sf::RenderWindow &window, Spritesheet &spritesheet, SoundSystem &soun
       id(id),
       door(spritesheet.get_sprite(id), id, position, size)
 {
-    //door = Tile(spritesheet.get_sprite(id), id);
-    if(id == DOOR_YELLOW || id == DOOR_BLUE)
-    {
-        key = id + 10;
-    }
-    else
-    {
-        key = id + 18;
-    }
+    if(id == DOOR_YELLOW)
+        key = KEY_YELLOW;
+    if(id == DOOR_BLUE)
+        key = KEY_BLUE;
+    if(id == DOOR_RED)
+        key = KEY_RED;
+    if(id == DOOR_GREEN)
+        key = KEY_GREEN;
 }
 
 void Door::draw(sf::RenderStates &states)

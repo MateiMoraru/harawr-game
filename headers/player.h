@@ -33,11 +33,16 @@ class Player
         sf::Vector2f get_moved() const { return moved; }
         sf::Sprite get_sprite() const { return player.get_sprite(); }
         sf::FloatRect get_hitbox() const { return hitbox; }
-
+        bool is_alive() const { return alive; }
         bool has_in_inventory(int id) const { return find(inventory.begin(), inventory.end(), id) != inventory.end(); }
 
         void set_size(float x, float y);
+        void set_position(float x, float y);
         void add_key(int id);
+        void kill() { alive = false; }
+        void revive() { alive = true; }
+        void remove_keys() { inventory.clear(); }
+
 
     private:
         sf::RenderWindow& window;
@@ -47,13 +52,11 @@ class Player
         sf::FloatRect hitbox;
         
         Tile player;
-        
-        int size = 64 * .9f;
-        
+        int size = 64 * .7f;
         sf::Vector2f moved;
         sf::Vector2f position;
-        float speed = 500.f;
-
+        float speed = 300.f;
+        bool alive = true;
         vector<int> inventory;
 
 };

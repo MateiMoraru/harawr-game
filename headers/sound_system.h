@@ -20,16 +20,21 @@ const int BACKGROUND_SOUND = 0,
           BREATHING = 8,
           PAGE_TURN = 9,
           JUMPSCARE = 10,
-          HAUNT = 11;
+          HAUNT = 11,
+          DROPPING_ROCK = 12;
 
 class SoundSystem
 {
     public:
         SoundSystem();
         ~SoundSystem();
+
         void play_sound(int id);
         void play_loop_sound(int id);
         void play_sound(int id, float min, float max);
+        void play_critical_sound(int id, float min, float max);
+        void update();
+        void reset_sounds();
 
         float random_float(float min, float max);
 
@@ -39,6 +44,8 @@ class SoundSystem
         vector<sf::SoundBuffer> sounds;
         vector<sf::Sound> looped;
         vector<sf::Sound> active_sounds;
+        vector<sf::Sound> critical_sounds;
+
 
 };
 

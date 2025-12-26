@@ -1,1 +1,0 @@
-x86_64-w64-mingw32-g++ src/*.cpp -o bin/Harawr-game.exe -Iheaders -ISFML/include -L SFML/lib -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lsfml-network

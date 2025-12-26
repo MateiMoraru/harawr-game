@@ -28,6 +28,15 @@ Player::Player(sf::RenderWindow &window, Spritesheet &spritesheet, SoundSystem &
     hitbox.height = 64;
 }
 
+void Player::set_position(float x, float y)
+{
+    position.x = x;
+    position.y = y;
+
+    player.set_position(x, y);
+
+}
+
 void Player::update(float delta_time)
 {
     moved.x = 0;

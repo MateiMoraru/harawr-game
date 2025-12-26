@@ -25,7 +25,7 @@ class TileMap
     public:
         TileMap(sf::RenderWindow &window, Spritesheet &spritesheet, SoundSystem &soundsystem);
 
-        void update(Player &player, float delta_time);
+        bool update(Player &player, float delta_time);
         void draw(Player &player, sf::RenderStates &states, float delta_time);
         void draw_overlay();
         void draw_jumpscares(Player &player);
@@ -36,9 +36,12 @@ class TileMap
         void save();
         void load(SoundSystem &soundsystem);
 
+        void restart_nuns();
+        void restart();
         void scroll(int delta);
 
         int get_selected_block() const { return selected_tile_id; }
+        Tile get_checkpoint() const { return checkpoint; }
 
     private:
         sf::RenderWindow& window;
@@ -48,6 +51,7 @@ class TileMap
         sf::Font font;
         sf::RectangleShape thick_line;
         Tasks tasks;
+        Tile checkpoint;
 
         int tile_size = 64;
 
@@ -60,10 +64,13 @@ class TileMap
         vector<Tile> tile_map;
         vector<Tile> collidable_tiles;
         vector<Tile> keys;
+        vector<Tile> keys_start;
         vector<Jumpscare> jumpscares;
         vector<Door> doors;
         vector<Note> notes;
         vector<Nun> nuns;
+        vector<Nun> nuns_start;
+        vector<Tile> checkpoints;
         vector<pair<float, float>> line_overlay;
 
 };

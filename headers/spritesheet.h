@@ -37,7 +37,10 @@ const int NULL_TEX = 64, // Error texture
           NUN_LEFT = 26,
           NUN_RIGHT = 27,
           NUN_UP = 28,
-          NUN_DOWN = 29;
+          NUN_DOWN = 29,
+          BLUE_WALL = 30,
+          WALL = 31,
+          CHECKPOINT = 32;
 
 extern vector<int> collidable;
 

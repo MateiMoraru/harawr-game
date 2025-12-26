@@ -68,6 +68,8 @@ int main()
 
     Text fps_text = Text(font, 32);
     fps_text.set_position(0, 100);
+    Text display_message(font, 32);
+    display_message.set_position(0, SCREEN_HEIGHT * 0.9f);
 
     sf::RenderStates states;
 
@@ -77,6 +79,7 @@ int main()
     cout << "Elapsed loading time: " << clock.getElapsedTime().asSeconds() << "s" << endl;
     Tile temp_tile;
     float delta_time = 0;
+    float display_message_timer = 0;
 
     while (window.isOpen())
     {
@@ -120,10 +123,17 @@ int main()
 
         if(state == IN_GAME)
         {
+            if(!tile_map.update(player, delta_time))
+            {
+                state = MAIN_MENU;
+                display_message.set_string("Commit dieded");
+                display_message_timer = 0.f;
 
-            tile_map.update(player, delta_time);
-
-
+                soundsystem.reset_sounds();
+                soundsystem.play_loop_sound(BACKGROUND_SOUND);
+                player.remove_keys();
+                tile_map.restart();
+            }
             player.update(delta_time);
 
             player.offset.x = player.get_x() - SCREEN_WIDTH / 2.f;
@@ -151,13 +161,32 @@ int main()
             main_menu.draw();
 
             if(menu_return == 1)
+            {
                 state = IN_GAME;
+                if(!player.is_alive())
+                {
+                    player.revive();
+                    player.set_position(tile_map.get_checkpoint().get_x(), tile_map.get_checkpoint().get_y());
+                    tile_map.restart_nuns();
+                }
+            }
             else if(menu_return == 2)
                 window.close();
         }
 
         window.setView(window.getDefaultView());
         fps_text.draw(window);
+
+        display_message.draw(window);
+        if(display_message.get_string() != "")
+        {
+            display_message_timer += delta_time;
+            if(display_message_timer >= 5.f)
+            {
+                display_message.set_string("");
+                display_message_timer = 0;
+            }
+        }
 
         window.display();
     }
