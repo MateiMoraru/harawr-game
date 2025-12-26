@@ -29,8 +29,6 @@ int main()
     int state = MAIN_MENU;
 
     Settings settings = Settings();
-    
-    // Creating The Window
 
     sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
     if(settings.get_fullscreen())
@@ -45,11 +43,14 @@ int main()
         window.create(sf::VideoMode(settings.get_width(), settings.get_height()), "SFML harawr game");
     cout << "Created window (" << SCREEN_WIDTH << "; " << SCREEN_HEIGHT  << ")" << endl;
 
-    // Loading Settings
     if(!settings.get_vsync())
+    {
+        cout << "Vsync disabled" << endl;
+        window.setVerticalSyncEnabled(false);
         window.setFramerateLimit(settings.get_fps());
+    }
     else 
-        window.setVerticalSyncEnabled(settings.get_vsync());
+        window.setVerticalSyncEnabled(true);
 
     sf::Mouse::setPosition({SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2});
 
@@ -65,13 +66,8 @@ int main()
 
     MainMenu main_menu(window, spritesheet, soundsystem, font);
 
-
-    sf::Font fps_font;
-    fps_font.loadFromFile("assets/font/pixelated.ttf");
-    Text fps_text = Text(fps_font, 32);
+    Text fps_text = Text(font, 32);
     fps_text.set_position(0, 100);
-
-    //Main Loop
 
     sf::RenderStates states;
 
@@ -123,9 +119,7 @@ int main()
         window.clear(sf::Color::Black);
 
         if(state == IN_GAME)
-{
-            //thread update_thread(&TileMap::update, &tile_map, ref(player), ref(delta_time));
-            //update_thread.detach();
+        {
 
             tile_map.update(player, delta_time);
 
@@ -140,8 +134,10 @@ int main()
 
             tile_map.draw(player, states, delta_time);
             player.draw(states);
+            tile_map.draw_keys(player, states);
             tile_map.draw_jumpscares(player);
-            tile_map.draw_overlay();
+            if(random_float(0, 1) >= 0.995)
+                tile_map.draw_overlay();
             tile_map.draw_notes(player);
             tile_map.draw_tasks();
 

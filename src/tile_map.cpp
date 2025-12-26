@@ -1,6 +1,6 @@
 #include "tile_map.h"
 
-inline sf::Color compute_light(float obj_x, float obj_y, float obj_size, float player_x, float player_y, float player_size, float max_distance = 10.0f, float brightness_min = 0.04f, float brightness_max = 0.5f)
+inline sf::Color compute_light(float obj_x, float obj_y, float obj_size, float player_x, float player_y, float player_size, float max_distance = 7.0f * 64, float brightness_min = 0.04f, float brightness_max = 0.5f)
 {
     float dx = (obj_x + obj_size / 2.f) - (player_x + player_size / 2.f) + 64;
     float dy = (obj_y + obj_size / 2.f) - (player_y + player_size / 2.f);
@@ -125,6 +125,7 @@ void TileMap::update(Player &player, float delta_time)
             }
         }
     }
+
     for(Tile &key : keys)
     {
         if(!key.get_global_bounds().intersects(view))
@@ -145,6 +146,32 @@ void TileMap::update(Player &player, float delta_time)
             keys.pop_back();
 
             soundsystem.play_sound(KEY_PICKUP);
+        }
+    }
+
+    for (Nun &nun : nuns)
+    {
+        nun.update(player);
+
+        if (!nun.is_active() && nun.get_distance() < tile_size * 5.f)
+        {
+            nun.set_active(true);
+            soundsystem.play_sound(JUMPSCARE, 0.7, 1.5);
+            soundsystem.play_loop_sound(HAUNT);
+            haunt_sound_index = soundsystem.get_looped().size() - 1;
+        }
+
+        if (nun.is_active())
+        {
+            sf::Vector2f delta = nun.get_direction() * nun.get_speed() * delta_time;
+
+            nun.move(delta.x, 0);
+            if (nun.collides(collidable_tiles))
+                nun.move(-delta.x, 0);
+
+            nun.move(0, delta.y);
+            if (nun.collides(collidable_tiles))
+                nun.move(0, -delta.y);
         }
     }
 }
@@ -210,17 +237,24 @@ void TileMap::draw(Player &player, sf::RenderStates &states, float delta_time)
         }
     }
 
+    for(Nun &nun : nuns)
+    {
+        sf::Color color = compute_light(nun.get_x(), nun.get_y(), tile_size, player.get_x(), player.get_y(), player.get_size(), 6 * tile_size, 0.f);
 
+        nun.draw(states, color);
+        nun.draw(states, color);
+        nun.draw(states, color);
+    }
+
+}
+
+void TileMap::draw_keys(Player &player, sf::RenderStates &states)
+{
     for (size_t i = 0; i < keys.size(); )
     {
         Tile &key = keys[i];
-        key.set_sprite_color(compute_light(key.get_x(), key.get_y(), tile_size, player.get_x(), player.get_y(), tile_size));
+        key.set_sprite_color(compute_light(key.get_x(), key.get_y(), tile_size, player.get_x(), player.get_y(), tile_size, 7.f * tile_size));
         key.draw(window, states);
-        if (!key.get_global_bounds().intersects(view))
-        {
-            ++i;
-            continue;
-        }
 
         if (player.get_sprite().getGlobalBounds().intersects(key.get_global_bounds()))
         {
@@ -302,20 +336,19 @@ void TileMap::save()
 
     for(Tile tile : tile_map)
     {
-        out << tile.get_id() << ' ' << tile.get_x() << ' ' << tile.get_y() << '\n';
+        if(tile.get_id() == JUMPSCARE_BLOCK)
+            out << tile.get_id() << ' ' << tile.get_x() << ' ' << tile.get_y() << tile.get_id() << endl;
+        else
+            out << tile.get_id() << ' ' << tile.get_x() << ' ' << tile.get_y() << endl;
     }
     for(Door &door : doors)
-    {
-        out << door.get_id() << ' ' << door.get_x() << ' ' << door.get_y() << '\n';
-    }
+        out << door.get_id() << ' ' << door.get_x() << ' ' << door.get_y() << endl;
     for(Tile &key : keys)
-    {
         out << key.get_id() << ' ' << key.get_x() << ' ' << key.get_y() << endl;
-    }
     for(Jumpscare &j : jumpscares)
-    {
         out << JUMPSCARE_BLOCK << ' ' << j.get_x() << ' ' << j.get_y() << ' ' <<  j.get_id() << endl;
-    }
+    for(Nun &nun: nuns)
+        out << NUN_LEFT << ' ' << nun.get_x() << ' ' << nun.get_y() << ' ' << endl;
 
     cout << "Map saved" << endl;
 }
@@ -343,7 +376,7 @@ void TileMap::load(SoundSystem &soundsystem)
     float x, y, id, jumpscare_temp;
     while(in >> id >> x >> y)
     {
-        if(!(id == KEY_YELLOW || id == KEY_BLUE || id == KEY_RED || id == KEY_GREEN) && !(id >= DOOR_YELLOW && id <= DOOR_GREEN))
+        if(!(id == KEY_YELLOW || id == KEY_BLUE || id == KEY_RED || id == KEY_GREEN) && !(id >= DOOR_YELLOW && id <= DOOR_GREEN) && id != NUN_LEFT)
         {
             tile_map.emplace_back(
                 spritesheet.get_sprite(id),
@@ -351,6 +384,12 @@ void TileMap::load(SoundSystem &soundsystem)
                 sf::Vector2f(x, y),
                 sf::Vector2f(tile_size, tile_size)
             );
+        }
+
+        if(id == NUN_LEFT)
+        {
+            cout << 0 << endl;
+            nuns.push_back(Nun(window, spritesheet, soundsystem, sf::Vector2f(x, y), sf::Vector2f(tile_size, tile_size)));
         }
 
         if(id == JUMPSCARE_BLOCK)

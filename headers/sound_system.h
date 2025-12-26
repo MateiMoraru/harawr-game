@@ -18,7 +18,9 @@ const int BACKGROUND_SOUND = 0,
           DOOR_KNOCK = 6,
           EAR_RING = 7,
           BREATHING = 8,
-          PAGE_TURN = 9;
+          PAGE_TURN = 9,
+          JUMPSCARE = 10,
+          HAUNT = 11;
 
 class SoundSystem
 {
@@ -30,6 +32,8 @@ class SoundSystem
         void play_sound(int id, float min, float max);
 
         float random_float(float min, float max);
+
+        vector<sf::Sound> get_looped() const { return looped; }
 
     private:
         vector<sf::SoundBuffer> sounds;

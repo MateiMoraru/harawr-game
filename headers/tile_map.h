@@ -14,8 +14,11 @@
 #include "door.h"
 #include "note.h"
 #include "tasks.h"
+#include "nun.h"
 
 using namespace std;
+
+float random_float(float min, float max);
 
 class TileMap
 {
@@ -27,6 +30,7 @@ class TileMap
         void draw_overlay();
         void draw_jumpscares(Player &player);
         void draw_notes(Player &player);
+        void draw_keys(Player &player, sf::RenderStates &states);
         void draw_tasks();
 
         void save();
@@ -51,6 +55,7 @@ class TileMap
         bool left_mouse_was_pressed = false;
         int selected_tile_id = 0;
         float elapsed_time_door_knock = 0;
+        int haunt_sound_index = -1;
 
         vector<Tile> tile_map;
         vector<Tile> collidable_tiles;
@@ -58,6 +63,7 @@ class TileMap
         vector<Jumpscare> jumpscares;
         vector<Door> doors;
         vector<Note> notes;
+        vector<Nun> nuns;
         vector<pair<float, float>> line_overlay;
 
 };

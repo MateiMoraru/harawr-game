@@ -1,12 +1,11 @@
-CXX = g++
-CXXFLAGS = -std=c++20 -O2 -Iheaders -IC:/SFML/include
-LDFLAGS = -LC:/SFML/lib -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lsfml-network
+LIBS = -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lsfml-network
 
-SRC = src/*.cpp
-OUT = bin/main.exe
+main:
+	@echo "Time took for compiling:"
+	@/usr/bin/time -f "%e" g++ src/*.cpp -o bin/main.exe -Iheaders $(LIBS)
 
-all:
-	$(CXX) $(SRC) -o $(OUT) $(CXXFLAGS) $(LDFLAGS)
+	@echo "\n\n"
+	@echo "Running game:\n"
 
-clean:
-	rm -f $(OUT)
+run: main
+	@./bin/main.exe
