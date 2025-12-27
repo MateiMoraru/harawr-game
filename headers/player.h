@@ -55,9 +55,9 @@ class Player
         int size = 64 * .7f;
         sf::Vector2f moved;
         sf::Vector2f position;
-        float speed = 800.f;
+        float speed = 300.f;
         bool alive = true;
-        vector<int> inventory = {KEY_RED, KEY_BLUE, KEY_GREEN};
+        vector<int> inventory;// = {KEY_RED, KEY_BLUE, KEY_GREEN};
 
 };
 

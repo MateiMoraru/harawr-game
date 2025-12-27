@@ -302,11 +302,31 @@ void TileMap::draw(Player &player, sf::RenderStates &states, float delta_time)
             continue;
         float max_distance = (7.f + random_float(0.f, .1f)) * tile_size;
 
-        tile.set_sprite_color(compute_light(
-            tile.get_x(), tile.get_y(), tile_size,
-            player.get_x(), player.get_y(), player.get_size(),
-            max_distance
-        ));
+        sf::Color color = compute_light(
+                                        tile.get_x(), tile.get_y(), tile_size,
+                                        player.get_x(), player.get_y(), player.get_size(),
+                                        max_distance
+                                    );
+
+        tile.set_sprite_color(color);
+
+
+        if (tile.get_id() == CHAIR && color.a > 20)
+        {
+            highlight_timer += delta_time;
+
+            if (highlight_timer > 1.f)
+            {
+                highlight_alpha = (highlight_alpha == 255 ? 150 : 255);
+                highlight_timer = 0.f;
+            }
+
+            tile.set_sprite_color(
+                sf::Color(color.r, color.g, color.b, highlight_alpha)
+            );
+        }
+        
+
         tile.draw(window, states);
     }
 

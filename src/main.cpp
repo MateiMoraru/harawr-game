@@ -152,8 +152,8 @@ int main()
             tile_map.draw_notes(player);
             tile_map.draw_tasks();
 
-            temp_tile.set_sprite(spritesheet.get_sprite(tile_map.get_selected_block()), tile_map.get_selected_block());
-            temp_tile.draw(window);
+            //temp_tile.set_sprite(spritesheet.get_sprite(tile_map.get_selected_block()), tile_map.get_selected_block());
+            //temp_tile.draw(window);
 
             if(tile_map.get_end())
             {
@@ -162,10 +162,9 @@ int main()
                 display_message_timer = -5.f;
             }
 
-            if(!displayed_last_message && player.get_x() > 5760 - player.get_x_offset() && player.get_x () > -3072 - player.get_y_offset())
+            if(!displayed_last_message && player.get_x() > 90 * tile_map.get_tile_size() - player.get_x_offset() && player.get_x () > -48 * tile_map.get_tile_size() - player.get_y_offset())
             {
-                cout << "AAAAAAA" << endl;
-                display_message.set_string("Hang yourself.");
+                display_message.set_string("Hang yourself. Press E");
                 displayed_last_message = true;
                 display_message_timer = 0.0f;
             }

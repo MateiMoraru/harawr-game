@@ -1,0 +1,14 @@
+SFML_DIR := SFML-2
+
+CXX := g++
+CXXFLAGS := -std=c++17 -Iheaders -I$(SFML_DIR)/include
+LDFLAGS := -L$(SFML_DIR)/lib
+LIBS := -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lsfml-network
+
+main:
+	@echo "Time took for compiling:"
+	@/usr/bin/time -f "%e" \
+	$(CXX) src/*.cpp -o bin/main $(CXXFLAGS) $(LDFLAGS) $(LIBS)
+
+run: main
+	@LD_LIBRARY_PATH=$(SFML_DIR)/lib ./bin/main

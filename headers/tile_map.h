@@ -44,6 +44,7 @@ class TileMap
         int get_selected_block() const { return selected_tile_id; }
         Tile get_checkpoint() const { return checkpoint; }
         bool get_end() const { return end; }
+        float get_tile_size() const { return tile_size; }
 
     private:
         sf::RenderWindow& window;
@@ -60,12 +61,14 @@ class TileMap
 
         int tile_size = 64;
 
-        bool is_editing = true;
+        bool is_editing = false;
         bool left_mouse_was_pressed = false;
         bool end = false;
         int selected_tile_id = 0;
         float elapsed_time_door_knock = 0;
         int haunt_sound_index = -1;
+        float highlight_timer = 0.f;
+        int highlight_alpha = 255;
 
         vector<Tile> tile_map;
         vector<Tile> collidable_tiles;
