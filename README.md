@@ -10,5 +10,7 @@
 
 ### Current state
 
+![current state](assets/screenshots/s1.png)
 ![current state](assets/screenshots/s2.png)
 ![current state](assets/screenshots/s3.png)
+![current state](assets/screenshots/s4.png)
