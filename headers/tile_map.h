@@ -32,9 +32,10 @@ class TileMap
         void draw_notes(Player &player);
         void draw_keys(Player &player, sf::RenderStates &states);
         void draw_tasks();
+        void draw_end();
 
         void save();
-        void load(SoundSystem &soundsystem);
+        void load(SoundSystem &soundsystem, Tile end_picture);
 
         void restart_nuns();
         void restart();
@@ -42,6 +43,7 @@ class TileMap
 
         int get_selected_block() const { return selected_tile_id; }
         Tile get_checkpoint() const { return checkpoint; }
+        bool get_end() const { return end; }
 
     private:
         sf::RenderWindow& window;
@@ -52,11 +54,15 @@ class TileMap
         sf::RectangleShape thick_line;
         Tasks tasks;
         Tile checkpoint;
+        sf::Sprite end_sprite;
+        sf::Texture end_texture;
+        Tile end_picture;
 
         int tile_size = 64;
 
         bool is_editing = true;
         bool left_mouse_was_pressed = false;
+        bool end = false;
         int selected_tile_id = 0;
         float elapsed_time_door_knock = 0;
         int haunt_sound_index = -1;

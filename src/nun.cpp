@@ -36,10 +36,10 @@ void Nun::update(Player &player, float delta_time)
 
     distance = std::sqrt(dx * dx + dy * dy);
 
-    if(dt > 0.5)
+    if((int) (dt * 10) % 5 == 0)
     {
-        position.y -= size.x / 8 * fly_dir;
-        fly_dir *= -1;
+        //position.y -= size.x / 8 * fly_dir;
+        //fly_dir *= -1;
     }
     
     if(dt > 1 && active)

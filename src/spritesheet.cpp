@@ -1,6 +1,6 @@
 #include "spritesheet.h"
 
-vector<int> collidable = {BRICK, WALL};//, DOOR_YELLOW, DOOR_BLUE, DOOR_RED, DOOR_GREEN};
+vector<int> collidable = {BRICK, WALL, BED_1, BED_2, DRAWER, CHAIR, FLOWER_POT};//, DOOR_YELLOW, DOOR_BLUE, DOOR_RED, DOOR_GREEN};
 
 Spritesheet::Spritesheet()
 {

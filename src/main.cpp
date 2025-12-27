@@ -80,6 +80,7 @@ int main()
     Tile temp_tile;
     float delta_time = 0;
     float display_message_timer = 0;
+    bool displayed_last_message = false;
 
     while (window.isOpen())
     {
@@ -153,6 +154,21 @@ int main()
 
             temp_tile.set_sprite(spritesheet.get_sprite(tile_map.get_selected_block()), tile_map.get_selected_block());
             temp_tile.draw(window);
+
+            if(tile_map.get_end())
+            {
+                tile_map.draw_end();
+                display_message.set_string("Finally dealt with it.");
+                display_message_timer = -5.f;
+            }
+
+            if(!displayed_last_message && player.get_x() > 5760 - player.get_x_offset() && player.get_x () > -3072 - player.get_y_offset())
+            {
+                cout << "AAAAAAA" << endl;
+                display_message.set_string("Hang yourself.");
+                displayed_last_message = true;
+                display_message_timer = 0.0f;
+            }
         }
 
         else if(state == MAIN_MENU)

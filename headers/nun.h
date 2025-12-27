@@ -32,6 +32,7 @@ class Nun
         sf::FloatRect get_global_bounds() const { return nun.get_sprite().getGlobalBounds(); }
 
         void set_active(bool activated) { active = activated; }
+        void set_position(float x, float y) { nun.set_position(x, y); position = sf::Vector2f(x, y); }
 
     private:
         sf::RenderWindow &window;

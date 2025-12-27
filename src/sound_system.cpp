@@ -10,6 +10,8 @@ float SoundSystem::random_float(float min, float max)
 
 SoundSystem::SoundSystem()
 {
+    looped.reserve(8);
+
     std::vector<string> filenames = {
         "assets/sfx/background_music.mp3",
         "assets/sfx/violin_abuse.mp3",
@@ -92,6 +94,11 @@ void SoundSystem::reset_sounds()
     {
         sound.stop();
     }
+    looped.emplace_back();
+    sf::Sound &s = looped.back();
+    s.setBuffer(sounds[BACKGROUND_SOUND]);
+    s.play();
+    s.setLoop(true);
 }
 
 SoundSystem::~SoundSystem()

@@ -6,6 +6,7 @@
 #include <SFML/Audio.hpp>
 #include <iostream>
 #include <vector>
+#include <deque>
 
 using namespace std;
 
@@ -38,13 +39,13 @@ class SoundSystem
 
         float random_float(float min, float max);
 
-        vector<sf::Sound> get_looped() const { return looped; }
+        vector<sf::Sound>& get_looped() { return looped; }
 
     private:
         vector<sf::SoundBuffer> sounds;
         vector<sf::Sound> looped;
-        vector<sf::Sound> active_sounds;
-        vector<sf::Sound> critical_sounds;
+        deque<sf::Sound> active_sounds;
+        deque<sf::Sound> critical_sounds;
 
 
 };

@@ -29,10 +29,23 @@ TileMap::TileMap(sf::RenderWindow &window, Spritesheet &spritesheet, SoundSystem
         if(i < window.getSize().y / 2 - 100 || i > window.getSize().y / 2 + 100)
             line_overlay.push_back(pair<float, float>(i, random_float(0.5, 15)));
     }
-    load(soundsystem);
 
     font.loadFromFile("assets/font/pixelated.ttf");
     tasks.set_font(font);
+
+    end_texture.loadFromFile("assets/sprites/jumpscare_1.png");
+
+    sf::Sprite sprite;
+    sprite.setTexture(end_texture);
+
+    end_picture = Tile(
+        sprite,
+        -1,
+        sf::Vector2f(0, 0),
+        sf::Vector2f(window.getSize().x, window.getSize().y)
+    );
+
+    load(soundsystem, end_picture);
     
 }
 
@@ -64,6 +77,7 @@ bool TileMap::update(Player &player, float delta_time)
     {
         if(checkpoint.get_global_bounds().intersects(player.get_sprite().getGlobalBounds()))
         {
+            
             this->checkpoint.set_position(checkpoint.get_x(), checkpoint.get_y());
             if(i == 1 || i == 2)
             {
@@ -84,31 +98,41 @@ bool TileMap::update(Player &player, float delta_time)
                 bool active = false;
                 for(Nun &nun : nuns)
                     if(nun.is_active())
+                    {
                         active = true;
+                        nun.set_active(false);
+                        nun.set_position(-100000, -100000);
+                    }
 
                 if(active)
                 {
                     Tile temp = Tile(spritesheet.get_sprite(id), id, sf::Vector2f(x, y), sf::Vector2f(tile_size, tile_size));
                     
-                    if(tile_map[tile_map.size() - 1].get_x() != 17 * tile_size)
+                    if(tile_map[tile_map.size() - 1].get_x() != x)
                         tile_map.push_back(temp);
                     
+                    soundsystem.reset_sounds();
                     soundsystem.play_critical_sound(DROPPING_ROCK, 0.6, 1.2);
+                    soundsystem.play_sound(BREATHING);
+                    for(Nun &nun : nuns)
+                    {
+                        nun.set_active(false);
+                    }
+
+                    checkpoints[i] = checkpoints.back();
+                    checkpoints.pop_back();
 
                 }
-                for(Nun &nun : nuns)
-                {
-                    nun.set_active(false);
-                }
-                soundsystem.play_sound(BREATHING);
+                
             }
         }
         i++;
     }
 
+    sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
+    
     if(is_editing)
     {
-        sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
         
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
         {
@@ -164,8 +188,27 @@ bool TileMap::update(Player &player, float delta_time)
                 }
                 
             }
-        }
+        }    
     }
+    
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::E))
+        {
+            float x = mouse_pos.x + player.offset.x;
+            float y = mouse_pos.y + player.offset.y;
+            
+            for(int i = 0; i < tile_map.size(); i++)
+            {
+                if (tile_map[i].get_id() == CHAIR &&
+                    x > tile_map[i].get_x() &&
+                    x < tile_map[i].get_x() + tile_size &&
+                    y > tile_map[i].get_y() &&
+                    y < tile_map[i].get_y() + tile_size)
+                {
+                    end = true;
+                }
+                
+            }
+        }
 
     sf::FloatRect view(player.get_x_offset(), player.get_y_offset(), window.getSize().x, window.getSize().y);
 
@@ -225,7 +268,7 @@ bool TileMap::update(Player &player, float delta_time)
         {
             nun.set_active(true);
             soundsystem.play_critical_sound(JUMPSCARE, 0.7, 1.5);
-            soundsystem.play_critical_sound(HAUNT, 0.4, 0.8);
+            soundsystem.play_sound(HAUNT, 0.4, 0.8);
             haunt_sound_index = soundsystem.get_looped().size() - 1;
         }
 
@@ -389,6 +432,11 @@ void TileMap::draw_overlay()
     }
 }
 
+void TileMap::draw_end()
+{
+    end_picture.draw(window);
+}
+
 void TileMap::save()
 {
     ofstream out("assets/data/map.txt");
@@ -404,8 +452,6 @@ void TileMap::save()
         out << door.get_id() << ' ' << door.get_x() << ' ' << door.get_y() << endl;
     for(Tile &key : keys_start)
         out << key.get_id() << ' ' << key.get_x() << ' ' << key.get_y() << endl;
-    for(Jumpscare &j : jumpscares)
-        out << JUMPSCARE_BLOCK << ' ' << j.get_x() << ' ' << j.get_y() << ' ' <<  j.get_id() << endl;
     for(Nun &nun: nuns_start)
         out << NUN_LEFT << ' ' << nun.get_x() << ' ' << nun.get_y() << ' ' << endl;
     for(Note &note : notes)
@@ -414,7 +460,7 @@ void TileMap::save()
     cout << "Map saved" << endl;
 }
 
-void TileMap::load(SoundSystem &soundsystem)
+void TileMap::load(SoundSystem &soundsystem, Tile end_picture)
 {
 
     sf::Clock timer;
@@ -422,6 +468,7 @@ void TileMap::load(SoundSystem &soundsystem)
     tile_map.clear();
     doors.clear();
     keys.clear();
+    jumpscares.clear();
     collidable_tiles.clear();
     tile_map.reserve(1000);
     doors.reserve(10);
@@ -451,7 +498,9 @@ void TileMap::load(SoundSystem &soundsystem)
             std::cout << "FAILED TO GET Y" << endl;
             return;
         }
-    
+
+        if(id == 0)
+            continue;
 
         if(!(id == KEY_YELLOW || id == KEY_BLUE || id == KEY_RED || id == KEY_GREEN) && !(id >= DOOR_YELLOW && id <= DOOR_GREEN) && id != NUN_LEFT)
         {
@@ -472,7 +521,7 @@ void TileMap::load(SoundSystem &soundsystem)
         if(id == JUMPSCARE_BLOCK)
         {
             in >> temp;
-            jumpscares.emplace_back(soundsystem, window, temp, sf::Vector2f(x, y), tile_map.size() - 1);
+            jumpscares.emplace_back(soundsystem, window, temp, sf::Vector2f(x, y), tile_map.size() - 1, end_picture);
         }
 
         if(find(collidable.begin(), collidable.end(), id) != collidable.end())

@@ -8,6 +8,7 @@
 
 #include "sound_system.h"
 #include "spritesheet.h"
+#include "tile.h"
 
 using namespace std;
 
@@ -17,7 +18,7 @@ extern std::vector<std::string> SCARY_PICTURES;
 class Jumpscare
 {
     public:
-        Jumpscare(SoundSystem &soundsystem, sf::RenderWindow &window, int display_id, sf::Vector2f position, int index);
+        Jumpscare(SoundSystem &soundsystem, sf::RenderWindow &window, int display_id, sf::Vector2f position, int index, Tile tile);
 
         void trigger();
         void draw();
@@ -41,6 +42,7 @@ class Jumpscare
         int alpha = 255;
         bool triggered = false;
         bool deleted = false;
+        Tile tile;
         sf::Sprite sprite;
         sf::Texture texture;
         sf::Vector2f position;

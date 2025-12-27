@@ -108,7 +108,6 @@ void Player::update(float delta_time)
         walk_animation_down.stop();
         walk_animation_right.stop();
         walk_animation_left.stop();
-        //player.set_sprite(spritesheet.get_sprite(PLAYER), PLAYER);
         player.get_sprite().setOrigin(12.f, 8.f);
         player.set_scale({ size / 16.f, size / 16.f });
     }
